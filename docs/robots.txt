@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Sitemap: https://macmonitor.pages.dev/sitemap.xml
+
+# Block nothing, allow Google worldwide
