@@ -70,7 +70,7 @@ class OnboardingViewController: NSViewController {
         shieldEmoji.frame = NSRect(x:8, y:28, width:24, height:22)
         shield.addSubview(shieldEmoji)
 
-        let shieldLbl = NSTextField(wrappingLabelWithString:"Open Source\nMIT License\nAuditable & Trusted")
+        let shieldLbl = NSTextField(wrappingLabelWithString:L("open_source_badge"))
         shieldLbl.font = .systemFont(ofSize:8.5, weight:.semibold)
         shieldLbl.textColor = .systemGreen
         shieldLbl.frame = NSRect(x:34, y:6, width:78, height:42)

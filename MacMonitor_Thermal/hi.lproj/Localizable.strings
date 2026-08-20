@@ -38,3 +38,5 @@
 "card_disk_sub" = "मुख्य वॉल्यूम पर उपयोग की गई जगह";
 "card_battery_sub" = "बैटरी लाइफ की गणना...";
 "card_processor_states" = "प्रोसेसर की थर्मल स्थिति";
+"open_source_badge" = "ओपन सोर्स\nMIT लाइसेंस\nऑडिटेबल & भरोसेमंद";
+"open_source_header" = "ओपन सोर्स MIT";

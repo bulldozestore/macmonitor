@@ -38,3 +38,5 @@
 "card_disk_sub" = "主磁碟區已使用空間";
 "card_battery_sub" = "正在計算電池續航...";
 "card_processor_states" = "處理器熱狀態";
+"open_source_badge" = "開源軟體\nMIT 授權\n可稽核 & 可信賴";
+"open_source_header" = "開源 MIT";

@@ -38,3 +38,5 @@
 "card_disk_sub" = "メインボリュームの使用容量";
 "card_battery_sub" = "バッテリー残量を計算中...";
 "card_processor_states" = "プロセッサの熱状態";
+"open_source_badge" = "オープンソース\nMITライセンス\n監査可能・信頼性";
+"open_source_header" = "オープンソース MIT";

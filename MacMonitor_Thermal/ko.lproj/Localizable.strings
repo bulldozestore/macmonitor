@@ -38,3 +38,5 @@
 "card_disk_sub" = "메인 볼륨 사용 공간";
 "card_battery_sub" = "배터리 잔량 계산 중...";
 "card_processor_states" = "프로세서 열 상태";
+"open_source_badge" = "오픈 소스\nMIT 라이선스\n감사 가능 & 신뢰";
+"open_source_header" = "오픈 소스 MIT";

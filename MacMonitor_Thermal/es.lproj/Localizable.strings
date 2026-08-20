@@ -38,3 +38,5 @@
 "card_disk_sub" = "Espacio usado en volumen principal";
 "card_battery_sub" = "Calculando autonomía de batería...";
 "card_processor_states" = "Estados térmicos del procesador";
+"open_source_badge" = "Código Abierto\nLicencia MIT\nAuditable & Confiable";
+"open_source_header" = "Código Abierto MIT";

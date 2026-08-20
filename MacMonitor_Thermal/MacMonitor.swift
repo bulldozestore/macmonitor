@@ -75,7 +75,7 @@ class HeaderView:NSView{
         #else
         let chip = "Intel"
         #endif
-        ("\(chip) • \(os) • Open Source MIT" as NSString).draw(at:NSPoint(x:14,y:8),withAttributes:[.font:NSFont.systemFont(ofSize:10,weight:.regular),.foregroundColor:NSColor.secondaryLabelColor])
+        ("\(chip) • \(os) • \(L("open_source_header"))" as NSString).draw(at:NSPoint(x:14,y:8),withAttributes:[.font:NSFont.systemFont(ofSize:10,weight:.regular),.foregroundColor:NSColor.secondaryLabelColor])
     }
 }
 

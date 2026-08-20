@@ -38,3 +38,5 @@
 "card_disk_sub" = "Verwendeter Speicher auf Hauptvolume";
 "card_battery_sub" = "Akkulaufzeit wird berechnet...";
 "card_processor_states" = "Thermische Zustände des Prozessors";
+"open_source_badge" = "Open Source\nMIT-Lizenz\nPrüfbar & Vertrauenswürdig";
+"open_source_header" = "Open Source MIT";

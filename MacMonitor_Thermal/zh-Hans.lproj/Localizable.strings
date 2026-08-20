@@ -38,3 +38,5 @@
 "card_disk_sub" = "主卷已使用空间";
 "card_battery_sub" = "正在计算电池续航...";
 "card_processor_states" = "处理器热状态";
+"open_source_badge" = "开源软件\nMIT 许可证\n可审计 & 可信赖";
+"open_source_header" = "开源 MIT";

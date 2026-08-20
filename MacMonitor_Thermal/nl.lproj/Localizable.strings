@@ -38,3 +38,5 @@
 "card_disk_sub" = "Gebruikte ruimte op hoofdvolume";
 "card_battery_sub" = "Batterijduur berekenen...";
 "card_processor_states" = "Thermische toestandsindicatoren";
+"open_source_badge" = "Open Source\nMIT-licentie\nControleerbaar & Betrouwbaar";
+"open_source_header" = "Open Source MIT";
