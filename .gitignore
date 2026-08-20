@@ -7,3 +7,4 @@ MacMonitor.app/
 *.o
 *.d
 .wrangler/
+*.dmg
