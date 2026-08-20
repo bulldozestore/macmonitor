@@ -1,0 +1,53 @@
+/* Thermal states */
+"thermal_normal" = "Normal";
+"thermal_warm" = "Warm";
+"thermal_hot" = "Hot";
+"thermal_critical" = "Critical";
+"thermal_sub_normal" = "Normal • No throttling";
+"thermal_sub_warm" = "Warm • Moderate load";
+"thermal_sub_hot" = "Hot • Throttling active";
+"thermal_sub_critical" = "Critical • Severe reduction";
+"thermal_unknown" = "--";
+
+/* Labels */
+"label_processor" = "Processor";
+"label_memory" = "Memory";
+"label_disk" = "Disk";
+"label_battery" = "Battery";
+"label_used_of" = "%@ used of %@";
+"label_disk_detail" = "%@ used • %@ free";
+"label_battery_charging" = "%d%% • %@ to charge";
+"label_battery_remaining" = "%d%% • %@ remaining";
+"label_battery_full" = "Full";
+"label_time_unknown" = "--:--";
+
+/* Menu */
+"menu_preferences" = "Preferences…";
+"menu_quit" = "Quit";
+"menu_language" = "Language";
+
+/* Support banner */
+"support_banner" = "Enjoying MacMonitor? Buy me a coffee ☕";
+"support_button" = "☕ Support";
+
+/* Settings window */
+"settings_title" = "MacMonitor — Preferences";
+"settings_show_in_menubar" = "Show in menu bar:";
+"settings_cpu" = "CPU / Processor";
+"settings_memory" = "Memory RAM";
+"settings_disk" = "Disk (HD/SSD)";
+"settings_battery" = "Battery";
+"settings_restore" = "Restore Defaults";
+"settings_language_label" = "Language";
+
+/* Onboarding */
+"onboarding_running" = "MacMonitor is running!";
+"onboarding_subtitle" = "All system metrics are being monitored in real time";
+"onboarding_btn" = "Got it, let's go →";
+"open_source_label" = "Open Source • Auditable code on GitHub";
+
+/* Onboarding cards */
+"card_memory_sub" = "Monitoring RAM in real time";
+"card_disk_sub" = "Space used on main volume";
+"card_battery_sub" = "Calculating battery life...";
+"card_processor_states" = "Thermal state indicators";

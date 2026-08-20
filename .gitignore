@@ -1,4 +1,8 @@
 .DS_Store
 MacMonitor
+MacMonitor_arm64
+MacMonitor_x86
+MacMonitor_universal
+MacMonitor.app/
 *.o
 *.d

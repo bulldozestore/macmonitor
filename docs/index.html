@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MacMonitor — CPU, RAM & Battery for macOS</title>
+<meta name="description" content="MacMonitor is a free, open source macOS menu bar app that shows CPU thermal state, RAM usage, disk usage and battery life in real time.">
+<link rel="canonical" href="https://macmonitor.pages.dev/">
+<meta property="og:title" content="MacMonitor — CPU, RAM & Battery for macOS">
+<meta property="og:description" content="Free, open source macOS menu bar app. CPU thermal state, RAM, disk and battery in real time. Universal Binary — Apple Silicon + Intel.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://macmonitor.pages.dev/">
+<meta property="og:image" content="https://macmonitor.pages.dev/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MacMonitor — CPU, RAM & Battery for macOS">
+<meta name="twitter:description" content="Free, open source macOS menu bar app. Monitors CPU, RAM, disk, battery in real time.">
+<link rel="alternate" hreflang="en" href="https://macmonitor.pages.dev/?lang=en">
+<link rel="alternate" hreflang="pt" href="https://macmonitor.pages.dev/?lang=pt">
+<link rel="alternate" hreflang="es" href="https://macmonitor.pages.dev/?lang=es">
+<link rel="alternate" hreflang="fr" href="https://macmonitor.pages.dev/?lang=fr">
+<link rel="alternate" hreflang="de" href="https://macmonitor.pages.dev/?lang=de">
+<link rel="alternate" hreflang="ja" href="https://macmonitor.pages.dev/?lang=ja">
+<link rel="alternate" hreflang="ko" href="https://macmonitor.pages.dev/?lang=ko">
+<link rel="alternate" hreflang="zh" href="https://macmonitor.pages.dev/?lang=zh">
+<link rel="alternate" hreflang="hi" href="https://macmonitor.pages.dev/?lang=hi">
+<link rel="alternate" hreflang="x-default" href="https://macmonitor.pages.dev/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "MacMonitor",
+  "operatingSystem": "macOS 13+",
+  "applicationCategory": "UtilitiesApplication",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "url": "https://macmonitor.pages.dev/",
+  "downloadUrl": "https://github.com/goiascontab-ui/macmonitor/releases/latest",
+  "author": { "@type": "Person", "name": "bulldozestore" },
+  "license": "https://opensource.org/licenses/MIT",
+  "description": "Free, open source macOS menu bar app showing CPU thermal state, RAM, disk and battery in real time."
+}
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d0d0f;
+    --bg2: #16161a;
+    --bg3: #1e1e24;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0f0f5;
+    --sub: #8888a0;
+    --accent: #5e9bff;
+    --green: #34c759;
+    --orange: #ff9500;
+    --red: #ff3b30;
+    --yellow: #ffd60a;
+    --radius: 14px;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 32px;
+    background: rgba(13,13,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-size: 17px; font-weight: 700; letter-spacing: -.3px; }
+  .nav-logo span { color: var(--accent); }
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+  .nav-right a { color: var(--sub); text-decoration: none; font-size: 14px; transition: color .2s; }
+  .nav-right a:hover { color: var(--text); }
+  #lang-select {
+    background: var(--bg2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 5px 10px; font-size: 13px; cursor: pointer;
+  }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 100px 24px 80px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(94,155,255,0.12);
+    border: 1px solid rgba(94,155,255,0.25);
+    color: var(--accent);
+    font-size: 12px; font-weight: 600; letter-spacing: .5px;
+    padding: 5px 14px; border-radius: 100px;
+    margin-bottom: 28px;
+  }
+  h1 {
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  h1 .accent { color: var(--accent); }
+  .hero-sub {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: var(--sub);
+    max-width: 560px; margin: 0 auto 40px;
+  }
+  .hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    font-size: 16px; font-weight: 700;
+    padding: 14px 32px; border-radius: 12px;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    transition: opacity .2s, transform .15s;
+  }
+  .btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+  .btn-secondary {
+    background: var(--bg2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-size: 16px; font-weight: 600;
+    padding: 14px 28px; border-radius: 12px;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    transition: background .2s;
+  }
+  .btn-secondary:hover { background: var(--bg3); }
+  .hero-meta {
+    margin-top: 20px;
+    font-size: 13px; color: var(--sub);
+  }
+
+  /* MENUBAR PREVIEW */
+  .menubar-preview {
+    margin: 0 auto 80px;
+    max-width: 600px;
+    padding: 0 24px;
+    text-align: center;
+  }
+  .menubar-bar {
+    display: inline-flex; align-items: center; gap: 24px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: .2px;
+  }
+  .mb-item { display: flex; align-items: center; gap: 6px; }
+  .mb-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .mb-dot.green { background: var(--green); }
+  .mb-dot.orange { background: var(--orange); }
+  .mb-dot.blue { background: var(--accent); }
+  .mb-dot.gray { background: var(--sub); }
+
+  /* FEATURES */
+  .section { padding: 80px 24px; max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 12px;
+  }
+  .section-title { font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -.5px; margin-bottom: 16px; }
+  .section-sub { font-size: 17px; color: var(--sub); max-width: 520px; margin-bottom: 56px; }
+
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    transition: border-color .2s;
+  }
+  .card:hover { border-color: rgba(94,155,255,0.3); }
+  .card-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 16px;
+  }
+  .card-icon.cpu { background: rgba(255,59,48,0.15); }
+  .card-icon.mem { background: rgba(94,155,255,0.15); }
+  .card-icon.disk { background: rgba(255,149,0,0.15); }
+  .card-icon.bat { background: rgba(52,199,89,0.15); }
+  .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--sub); line-height: 1.55; }
+
+  /* THERMAL STATES */
+  .thermal-grid { display: flex; flex-direction: column; gap: 12px; max-width: 540px; }
+  .thermal-row {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px;
+  }
+  .thermal-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .thermal-info { flex: 1; }
+  .thermal-info strong { font-size: 14px; font-weight: 700; display: block; }
+  .thermal-info span { font-size: 12px; color: var(--sub); }
+  .thermal-badge {
+    font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  /* OPEN SOURCE */
+  .oss-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    display: flex; flex-wrap: wrap; gap: 32px; align-items: center;
+  }
+  .oss-box .oss-text { flex: 1; min-width: 240px; }
+  .oss-box h3 { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+  .oss-box p { font-size: 15px; color: var(--sub); }
+  .oss-box .oss-links { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 14px;
+    font-size: 13px; font-weight: 600;
+    text-decoration: none; color: var(--text);
+    transition: border-color .2s;
+  }
+  .chip:hover { border-color: rgba(94,155,255,0.4); }
+
+  /* COFFEE */
+  .coffee-box {
+    background: linear-gradient(135deg, #1e1a00, #2b2000);
+    border: 1px solid rgba(255,214,10,0.2);
+    border-radius: var(--radius);
+    padding: 40px;
+    text-align: center;
+  }
+  .coffee-box .coffee-emoji { font-size: 48px; margin-bottom: 16px; }
+  .coffee-box h3 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+  .coffee-box p { font-size: 15px; color: var(--sub); margin-bottom: 24px; }
+  .btn-coffee {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--yellow); color: #000;
+    font-size: 16px; font-weight: 800;
+    padding: 14px 32px; border-radius: 12px;
+    text-decoration: none; transition: opacity .2s, transform .15s;
+  }
+  .btn-coffee:hover { opacity: .9; transform: translateY(-1px); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 32px;
+    text-align: center;
+    font-size: 13px; color: var(--sub);
+  }
+  footer a { color: var(--sub); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+  .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 600px) {
+    nav { padding: 12px 16px; }
+    .nav-right a { display: none; }
+    .hero { padding: 60px 16px 48px; }
+    .section { padding: 56px 16px; }
+    .oss-box, .coffee-box { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Mac<span>Monitor</span></div>
+  <div class="nav-right">
+    <a href="https://github.com/goiascontab-ui/macmonitor" target="_blank" rel="noopener" data-i18n="nav_github">GitHub</a>
+    <a href="https://buymeacoffee.com/bulldozestore" target="_blank" rel="noopener" data-i18n="nav_coffee">☕ Support</a>
+    <select id="lang-select" aria-label="Language"></select>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="badge" data-i18n="badge_text">⚡ Free &amp; Open Source MIT</div>
+    <h1 data-i18n="hero_title">Your Mac's vitals,<br><span class="accent">always in sight</span></h1>
+    <p class="hero-sub" data-i18n="hero_sub">CPU thermal state, RAM, disk and battery — live in your menu bar. Universal Binary for Apple Silicon &amp; Intel.</p>
+    <div class="hero-cta">
+      <a href="https://github.com/goiascontab-ui/macmonitor/releases/latest" class="btn-primary" data-i18n="btn_download">⬇ Download for macOS</a>
+      <a href="https://github.com/goiascontab-ui/macmonitor" target="_blank" rel="noopener" class="btn-secondary" data-i18n="btn_source">View Source</a>
+    </div>
+    <p class="hero-meta" data-i18n="hero_meta">macOS 13 Ventura+ • 463 KB • v1.0 • MIT License</p>
+  </section>
+
+  <div class="menubar-preview">
+    <div class="menubar-bar">
+      <div class="mb-item">
+        <div class="mb-dot green"></div>
+        <span data-i18n="mb_normal">Normal</span>
+      </div>
+      <div class="mb-item">
+        <div class="mb-dot blue"></div>
+        <span>62%</span>
+      </div>
+      <div class="mb-item">
+        <div class="mb-dot orange"></div>
+        <span>74%</span>
+      </div>
+      <div class="mb-item">
+        <div class="mb-dot gray"></div>
+        <span>3:42</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="section">
+    <p class="section-label" data-i18n="features_label">Features</p>
+    <h2 class="section-title" data-i18n="features_title">Everything at a glance</h2>
+    <p class="section-sub" data-i18n="features_sub">No bloat. No telemetry. Pure native Swift — zero third-party dependencies.</p>
+    <div class="grid-4">
+      <div class="card">
+        <div class="card-icon cpu">🌡️</div>
+        <h3 data-i18n="feat_cpu_title">CPU Thermal</h3>
+        <p data-i18n="feat_cpu_desc">Instant alerts for Normal, Warm, Hot and Critical states using Apple's ProcessInfo API.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon mem">💾</div>
+        <h3 data-i18n="feat_mem_title">RAM Usage</h3>
+        <p data-i18n="feat_mem_desc">Active + wired + compressed memory tracked in real time with percentage and absolute values.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon disk">💿</div>
+        <h3 data-i18n="feat_disk_title">Disk Space</h3>
+        <p data-i18n="feat_disk_desc">Used and free space on your main volume — HD or SSD — updated every 5 minutes.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon bat">🔋</div>
+        <h3 data-i18n="feat_bat_title">Battery Life</h3>
+        <p data-i18n="feat_bat_desc">Time remaining or time to full charge. Hidden on desktop Macs without a battery.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <p class="section-label" data-i18n="thermal_label">Thermal states</p>
+    <h2 class="section-title" data-i18n="thermal_title">Understand your CPU</h2>
+    <p class="section-sub" data-i18n="thermal_sub">MacMonitor maps Apple's four thermal levels to clear, color-coded indicators.</p>
+    <div class="thermal-grid">
+      <div class="thermal-row">
+        <div class="thermal-dot" style="background:var(--green)"></div>
+        <div class="thermal-info">
+          <strong data-i18n="t_normal">Normal</strong>
+          <span data-i18n="t_normal_sub">No throttling — full performance</span>
+        </div>
+        <div class="thermal-badge" style="background:rgba(52,199,89,.15);color:var(--green)" data-i18n="t_normal_badge">All good</div>
+      </div>
+      <div class="thermal-row">
+        <div class="thermal-dot" style="background:var(--yellow)"></div>
+        <div class="thermal-info">
+          <strong data-i18n="t_warm">Warm</strong>
+          <span data-i18n="t_warm_sub">Moderate load — slight fan spin-up</span>
+        </div>
+        <div class="thermal-badge" style="background:rgba(255,214,10,.12);color:var(--yellow)" data-i18n="t_warm_badge">Watch it</div>
+      </div>
+      <div class="thermal-row">
+        <div class="thermal-dot" style="background:var(--orange)"></div>
+        <div class="thermal-info">
+          <strong data-i18n="t_hot">Hot</strong>
+          <span data-i18n="t_hot_sub">Active throttling — performance reduced</span>
+        </div>
+        <div class="thermal-badge" style="background:rgba(255,149,0,.15);color:var(--orange)" data-i18n="t_hot_badge">Throttling</div>
+      </div>
+      <div class="thermal-row">
+        <div class="thermal-dot" style="background:var(--red)"></div>
+        <div class="thermal-info">
+          <strong data-i18n="t_critical">Critical</strong>
+          <span data-i18n="t_critical_sub">Severe reduction — close heavy tasks now</span>
+        </div>
+        <div class="thermal-badge" style="background:rgba(255,59,48,.15);color:var(--red)" data-i18n="t_critical_badge">⚠ Critical</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="oss-box">
+      <div class="oss-text">
+        <h3 data-i18n="oss_title">100% Open Source</h3>
+        <p data-i18n="oss_desc">All code is on GitHub under the MIT license. No telemetry, no analytics, no hidden network requests. You can read, build, and audit every line.</p>
+        <div class="oss-links">
+          <a href="https://github.com/goiascontab-ui/macmonitor" class="chip" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            GitHub
+          </a>
+          <a href="https://github.com/goiascontab-ui/macmonitor/releases/latest" class="chip" target="_blank" rel="noopener" data-i18n="oss_releases">Releases</a>
+          <a href="https://github.com/goiascontab-ui/macmonitor/blob/main/LICENSE" class="chip" target="_blank" rel="noopener">MIT License</a>
+        </div>
+      </div>
+      <div style="font-size:72px;line-height:1">🛡️</div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="coffee-box">
+      <div class="coffee-emoji">☕</div>
+      <h3 data-i18n="coffee_title">Enjoying MacMonitor?</h3>
+      <p data-i18n="coffee_desc">It's free and always will be. If it saves your Mac from overheating, consider buying me a coffee!</p>
+      <a href="https://buymeacoffee.com/bulldozestore" target="_blank" rel="noopener" class="btn-coffee" data-i18n="coffee_btn">☕ Buy me a coffee</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-links">
+    <a href="https://github.com/goiascontab-ui/macmonitor" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/goiascontab-ui/macmonitor/releases/latest" data-i18n="footer_download">Download</a>
+    <a href="https://github.com/goiascontab-ui/macmonitor/blob/main/LICENSE">MIT License</a>
+    <a href="https://buymeacoffee.com/bulldozestore" target="_blank" rel="noopener">Buy Me a Coffee</a>
+  </div>
+  <p>© 2026 MacMonitor • <span data-i18n="footer_made">Made with ❤️ for the Mac community</span></p>
+</footer>
+
+<script>
+const TRANSLATIONS = {
+  en: {
+    nav_github: "GitHub", nav_coffee: "☕ Support",
+    badge_text: "⚡ Free & Open Source MIT",
+    hero_title: "Your Mac's vitals,<br><span class=\"accent\">always in sight</span>",
+    hero_sub: "CPU thermal state, RAM, disk and battery — live in your menu bar. Universal Binary for Apple Silicon & Intel.",
+    btn_download: "⬇ Download for macOS", btn_source: "View Source",
+    hero_meta: "macOS 13 Ventura+ • 463 KB • v1.0 • MIT License",
+    mb_normal: "Normal",
+    features_label: "Features", features_title: "Everything at a glance",
+    features_sub: "No bloat. No telemetry. Pure native Swift — zero third-party dependencies.",
+    feat_cpu_title: "CPU Thermal", feat_cpu_desc: "Instant alerts for Normal, Warm, Hot and Critical states using Apple's ProcessInfo API.",
+    feat_mem_title: "RAM Usage", feat_mem_desc: "Active + wired + compressed memory tracked in real time with percentage and absolute values.",
+    feat_disk_title: "Disk Space", feat_disk_desc: "Used and free space on your main volume — HD or SSD — updated every 5 minutes.",
+    feat_bat_title: "Battery Life", feat_bat_desc: "Time remaining or time to full charge. Hidden on desktop Macs without a battery.",
+    thermal_label: "Thermal states", thermal_title: "Understand your CPU",
+    thermal_sub: "MacMonitor maps Apple's four thermal levels to clear, color-coded indicators.",
+    t_normal: "Normal", t_normal_sub: "No throttling — full performance", t_normal_badge: "All good",
+    t_warm: "Warm", t_warm_sub: "Moderate load — slight fan spin-up", t_warm_badge: "Watch it",
+    t_hot: "Hot", t_hot_sub: "Active throttling — performance reduced", t_hot_badge: "Throttling",
+    t_critical: "Critical", t_critical_sub: "Severe reduction — close heavy tasks now", t_critical_badge: "⚠ Critical",
+    oss_title: "100% Open Source", oss_releases: "Releases",
+    oss_desc: "All code is on GitHub under the MIT license. No telemetry, no analytics, no hidden network requests. You can read, build, and audit every line.",
+    coffee_title: "Enjoying MacMonitor?",
+    coffee_desc: "It's free and always will be. If it saves your Mac from overheating, consider buying me a coffee!",
+    coffee_btn: "☕ Buy me a coffee",
+    footer_download: "Download", footer_made: "Made with ❤️ for the Mac community"
+  },
+  pt: {
+    nav_github: "GitHub", nav_coffee: "☕ Apoiar",
+    badge_text: "⚡ Gratuito & Open Source MIT",
+    hero_title: "Os sinais vitais do seu Mac,<br><span class=\"accent\">sempre à vista</span>",
+    hero_sub: "Estado térmico da CPU, RAM, disco e bateria — ao vivo na sua barra de menus. Universal Binary para Apple Silicon e Intel.",
+    btn_download: "⬇ Baixar para macOS", btn_source: "Ver Código",
+    hero_meta: "macOS 13 Ventura+ • 463 KB • v1.0 • Licença MIT",
+    mb_normal: "Normal",
+    features_label: "Funcionalidades", features_title: "Tudo de um relance",
+    features_sub: "Sem inchaço. Sem telemetria. Swift nativo puro — sem dependências de terceiros.",
+    feat_cpu_title: "Temperatura CPU", feat_cpu_desc: "Alertas imediatos para estados Normal, Morno, Quente e Crítico usando a API ProcessInfo da Apple.",
+    feat_mem_title: "Uso de RAM", feat_mem_desc: "Memória ativa + com fio + comprimida monitorada em tempo real com percentual e valores absolutos.",
+    feat_disk_title: "Espaço em Disco", feat_disk_desc: "Espaço usado e livre no volume principal — HD ou SSD — atualizado a cada 5 minutos.",
+    feat_bat_title: "Duração da Bateria", feat_bat_desc: "Tempo restante ou tempo para carga completa. Oculto em Macs de mesa sem bateria.",
+    thermal_label: "Estados térmicos", thermal_title: "Entenda sua CPU",
+    thermal_sub: "O MacMonitor mapeia os quatro níveis térmicos da Apple em indicadores claros e coloridos.",
+    t_normal: "Normal", t_normal_sub: "Sem throttling — desempenho total", t_normal_badge: "Tudo certo",
+    t_warm: "Morno", t_warm_sub: "Carga moderada — ventoinhas acelerando", t_warm_badge: "Atenção",
+    t_hot: "Quente", t_hot_sub: "Throttling ativo — desempenho reduzido", t_hot_badge: "Throttling",
+    t_critical: "Crítico", t_critical_sub: "Redução severa — feche tarefas pesadas agora", t_critical_badge: "⚠ Crítico",
+    oss_title: "100% Open Source", oss_releases: "Releases",
+    oss_desc: "Todo o código está no GitHub sob licença MIT. Sem telemetria, sem analytics, sem requisições de rede ocultas. Você pode ler, compilar e auditar cada linha.",
+    coffee_title: "Curtiu o MacMonitor?",
+    coffee_desc: "É gratuito e sempre será. Se ele salvou seu Mac de superaquecer, considere pagar um café!",
+    coffee_btn: "☕ Pagar um café",
+    footer_download: "Baixar", footer_made: "Feito com ❤️ para a comunidade Mac"
+  },
+  es: {
+    nav_github: "GitHub", nav_coffee: "☕ Apoyar",
+    badge_text: "⚡ Gratuito & Open Source MIT",
+    hero_title: "Los signos vitales de tu Mac,<br><span class=\"accent\">siempre a la vista</span>",
+    hero_sub: "Estado térmico de la CPU, RAM, disco y batería — en vivo en tu barra de menús. Universal Binary para Apple Silicon e Intel.",
+    btn_download: "⬇ Descargar para macOS", btn_source: "Ver Código",
+    hero_meta: "macOS 13 Ventura+ • 463 KB • v1.0 • Licencia MIT",
+    mb_normal: "Normal",
+    features_label: "Funciones", features_title: "Todo de un vistazo",
+    features_sub: "Sin bloatware. Sin telemetría. Swift nativo puro — sin dependencias de terceros.",
+    feat_cpu_title: "Temperatura CPU", feat_cpu_desc: "Alertas instantáneas para estados Normal, Cálido, Caliente y Crítico usando la API ProcessInfo de Apple.",
+    feat_mem_title: "Uso de RAM", feat_mem_desc: "Memoria activa + con cable + comprimida en tiempo real con porcentaje y valores absolutos.",
+    feat_disk_title: "Espacio en Disco", feat_disk_desc: "Espacio usado y libre en tu volumen principal — HD o SSD — actualizado cada 5 minutos.",
+    feat_bat_title: "Duración Batería", feat_bat_desc: "Tiempo restante o tiempo para carga completa. Oculto en Macs de escritorio sin batería.",
+    thermal_label: "Estados térmicos", thermal_title: "Entiende tu CPU",
+    thermal_sub: "MacMonitor mapea los cuatro niveles térmicos de Apple en indicadores claros y con código de colores.",
+    t_normal: "Normal", t_normal_sub: "Sin throttling — rendimiento completo", t_normal_badge: "Todo bien",
+    t_warm: "Cálido", t_warm_sub: "Carga moderada — ventiladores acelerando", t_warm_badge: "Atención",
+    t_hot: "Caliente", t_hot_sub: "Throttling activo — rendimiento reducido", t_hot_badge: "Throttling",
+    t_critical: "Crítico", t_critical_sub: "Reducción severa — cierra tareas pesadas ahora", t_critical_badge: "⚠ Crítico",
+    oss_title: "100% Open Source", oss_releases: "Versiones",
+    oss_desc: "Todo el código está en GitHub bajo licencia MIT. Sin telemetría, sin analytics, sin solicitudes de red ocultas.",
+    coffee_title: "¿Disfrutas MacMonitor?",
+    coffee_desc: "Es gratuito y siempre lo será. ¡Si salvó tu Mac del sobrecalentamiento, considera invitarme un café!",
+    coffee_btn: "☕ Invitar un café",
+    footer_download: "Descargar", footer_made: "Hecho con ❤️ para la comunidad Mac"
+  },
+  fr: {
+    nav_github: "GitHub", nav_coffee: "☕ Soutenir",
+    badge_text: "⚡ Gratuit & Open Source MIT",
+    hero_title: "Les signes vitaux de votre Mac,<br><span class=\"accent\">toujours en vue</span>",
+    hero_sub: "État thermique du CPU, RAM, disque et batterie — en direct dans votre barre des menus. Universal Binary pour Apple Silicon et Intel.",
+    btn_download: "⬇ Télécharger pour macOS", btn_source: "Voir le code",
+    hero_meta: "macOS 13 Ventura+ • 463 Ko • v1.0 • Licence MIT",
+    mb_normal: "Normal",
+    features_label: "Fonctionnalités", features_title: "Tout d'un coup d'œil",
+    features_sub: "Sans superflu. Sans télémétrie. Swift natif pur — aucune dépendance tierce.",
+    feat_cpu_title: "Thermique CPU", feat_cpu_desc: "Alertes instantanées pour les états Normal, Tiède, Chaud et Critique via l'API ProcessInfo d'Apple.",
+    feat_mem_title: "Utilisation RAM", feat_mem_desc: "Mémoire active + filaire + compressée surveillée en temps réel avec pourcentage et valeurs absolues.",
+    feat_disk_title: "Espace Disque", feat_disk_desc: "Espace utilisé et libre sur votre volume principal — HD ou SSD — mis à jour toutes les 5 minutes.",
+    feat_bat_title: "Autonomie Batterie", feat_bat_desc: "Temps restant ou temps de charge complète. Masqué sur les Mac de bureau sans batterie.",
+    thermal_label: "États thermiques", thermal_title: "Comprendre votre CPU",
+    thermal_sub: "MacMonitor traduit les quatre niveaux thermiques d'Apple en indicateurs colorés clairs.",
+    t_normal: "Normal", t_normal_sub: "Pas de throttling — pleine performance", t_normal_badge: "Tout va bien",
+    t_warm: "Tiède", t_warm_sub: "Charge modérée — ventilateurs accélèrent", t_warm_badge: "Attention",
+    t_hot: "Chaud", t_hot_sub: "Throttling actif — performances réduites", t_hot_badge: "Throttling",
+    t_critical: "Critique", t_critical_sub: "Réduction sévère — fermez les tâches lourdes", t_critical_badge: "⚠ Critique",
+    oss_title: "100% Open Source", oss_releases: "Versions",
+    oss_desc: "Tout le code est sur GitHub sous licence MIT. Sans télémétrie, sans analytics, sans requêtes réseau cachées.",
+    coffee_title: "Vous appréciez MacMonitor ?",
+    coffee_desc: "C'est gratuit et le restera. S'il a sauvé votre Mac de la surchauffe, offrez-moi un café !",
+    coffee_btn: "☕ Offrir un café",
+    footer_download: "Télécharger", footer_made: "Fait avec ❤️ pour la communauté Mac"
+  },
+  de: {
+    nav_github: "GitHub", nav_coffee: "☕ Unterstützen",
+    badge_text: "⚡ Kostenlos & Open Source MIT",
+    hero_title: "Die Vitalzeichen deines Macs,<br><span class=\"accent\">immer im Blick</span>",
+    hero_sub: "CPU-Temperatur, RAM, Disk und Akku — live in deiner Menüleiste. Universal Binary für Apple Silicon und Intel.",
+    btn_download: "⬇ Für macOS laden", btn_source: "Quellcode",
+    hero_meta: "macOS 13 Ventura+ • 463 KB • v1.0 • MIT-Lizenz",
+    mb_normal: "Normal",
+    features_label: "Funktionen", features_title: "Alles auf einen Blick",
+    features_sub: "Kein Bloatware. Keine Telemetrie. Reines natives Swift — null Drittanbieter-Abhängigkeiten.",
+    feat_cpu_title: "CPU-Wärme", feat_cpu_desc: "Sofortige Warnungen für Normal, Warm, Heiß und Kritisch über Apples ProcessInfo-API.",
+    feat_mem_title: "RAM-Nutzung", feat_mem_desc: "Aktiver + leitungsgebundener + komprimierter Speicher in Echtzeit mit Prozent und absoluten Werten.",
+    feat_disk_title: "Festplattenplatz", feat_disk_desc: "Belegter und freier Speicher auf dem Hauptvolume — HD oder SSD — alle 5 Minuten aktualisiert.",
+    feat_bat_title: "Akkulaufzeit", feat_bat_desc: "Verbleibende Zeit oder Zeit bis zur vollen Ladung. Ausgeblendet bei Desktop-Macs ohne Akku.",
+    thermal_label: "Thermische Zustände", thermal_title: "Deinen CPU verstehen",
+    thermal_sub: "MacMonitor übersetzt Apples vier Thermalstufen in klare, farbcodierte Indikatoren.",
+    t_normal: "Normal", t_normal_sub: "Kein Throttling — volle Leistung", t_normal_badge: "Alles gut",
+    t_warm: "Warm", t_warm_sub: "Moderate Last — Lüfter drehen auf", t_warm_badge: "Beobachten",
+    t_hot: "Heiß", t_hot_sub: "Aktives Throttling — Leistung reduziert", t_hot_badge: "Throttling",
+    t_critical: "Kritisch", t_critical_sub: "Starke Drosselung — schwere Aufgaben schließen", t_critical_badge: "⚠ Kritisch",
+    oss_title: "100% Open Source", oss_releases: "Releases",
+    oss_desc: "Der gesamte Code liegt auf GitHub unter MIT-Lizenz. Keine Telemetrie, keine Analytics, keine versteckten Netzwerkanfragen.",
+    coffee_title: "MacMonitor gefällt dir?",
+    coffee_desc: "Es ist kostenlos und bleibt es auch. Wenn es deinen Mac vor Überhitzung bewahrt hat, spendier mir einen Kaffee!",
+    coffee_btn: "☕ Kaffee spendieren",
+    footer_download: "Herunterladen", footer_made: "Mit ❤️ für die Mac-Community"
+  },
+  ja: {
+    nav_github: "GitHub", nav_coffee: "☕ サポート",
+    badge_text: "⚡ 無料 & オープンソース MIT",
+    hero_title: "あなたの Mac のバイタル、<br><span class=\"accent\">常に目の届く場所に</span>",
+    hero_sub: "CPU 温度、RAM、ディスク、バッテリーをメニューバーでリアルタイム確認。Apple Silicon と Intel 対応のユニバーサルバイナリ。",
+    btn_download: "⬇ macOS 用ダウンロード", btn_source: "ソースを見る",
+    hero_meta: "macOS 13 Ventura 以降 • 463 KB • v1.0 • MIT ライセンス",
+    mb_normal: "正常",
+    features_label: "機能", features_title: "すべてひと目で",
+    features_sub: "ブロートウェアなし。テレメトリなし。純粋なネイティブ Swift — サードパーティ依存ゼロ。",
+    feat_cpu_title: "CPU 温度", feat_cpu_desc: "Apple の ProcessInfo API を使用して正常・やや熱い・熱い・危険の 4 段階を即座に通知。",
+    feat_mem_title: "RAM 使用率", feat_mem_desc: "アクティブ＋有線＋圧縮メモリをリアルタイムで追跡。",
+    feat_disk_title: "ディスク容量", feat_disk_desc: "メインボリュームの使用済みおよび空き容量。5 分ごと更新。",
+    feat_bat_title: "バッテリー残量", feat_bat_desc: "残り時間または満充電までの時間。バッテリーのないデスクトップ Mac では非表示。",
+    thermal_label: "温度状態", thermal_title: "CPU を理解する",
+    thermal_sub: "Apple の 4 段階の温度レベルを明確なカラーコードで表示。",
+    t_normal: "正常", t_normal_sub: "スロットリングなし — フルパフォーマンス", t_normal_badge: "問題なし",
+    t_warm: "やや熱い", t_warm_sub: "中程度の負荷 — ファン回転数増加", t_warm_badge: "要注意",
+    t_hot: "熱い", t_hot_sub: "スロットリング動作中 — 性能低下", t_hot_badge: "スロットリング",
+    t_critical: "危険", t_critical_sub: "深刻な低下 — 重いタスクを閉じてください", t_critical_badge: "⚠ 危険",
+    oss_title: "100% オープンソース", oss_releases: "リリース",
+    oss_desc: "全コードが MIT ライセンスで GitHub に公開。テレメトリなし、分析なし、隠れたネットワークリクエストなし。",
+    coffee_title: "MacMonitor を気に入りましたか？",
+    coffee_desc: "無料で今後も無料です。Mac の過熱を防いでくれたなら、コーヒー一杯おごってください！",
+    coffee_btn: "☕ コーヒーをおごる",
+    footer_download: "ダウンロード", footer_made: "Mac コミュニティへ ❤️ を込めて"
+  },
+  ko: {
+    nav_github: "GitHub", nav_coffee: "☕ 후원",
+    badge_text: "⚡ 무료 & 오픈 소스 MIT",
+    hero_title: "내 Mac의 상태,<br><span class=\"accent\">항상 한눈에</span>",
+    hero_sub: "CPU 온도, RAM, 디스크, 배터리를 메뉴 막대에서 실시간 확인. Apple Silicon과 Intel 지원 유니버설 바이너리.",
+    btn_download: "⬇ macOS용 다운로드", btn_source: "소스 보기",
+    hero_meta: "macOS 13 Ventura 이상 • 463 KB • v1.0 • MIT 라이선스",
+    mb_normal: "정상",
+    features_label: "기능", features_title: "한눈에 모든 것",
+    features_sub: "불필요한 기능 없음. 원격 측정 없음. 순수 네이티브 Swift — 서드파티 의존성 제로.",
+    feat_cpu_title: "CPU 온도", feat_cpu_desc: "Apple ProcessInfo API를 사용해 정상·약간 뜨거움·고온·위험 4단계 즉각 알림.",
+    feat_mem_title: "RAM 사용률", feat_mem_desc: "활성 + 유선 + 압축 메모리를 실시간으로 추적.",
+    feat_disk_title: "디스크 공간", feat_disk_desc: "메인 볼륨의 사용 및 여유 공간. 5분마다 업데이트.",
+    feat_bat_title: "배터리 수명", feat_bat_desc: "잔량 시간 또는 완충까지 시간. 배터리 없는 데스크탑 Mac에서는 숨김.",
+    thermal_label: "열 상태", thermal_title: "CPU 이해하기",
+    thermal_sub: "Apple의 4단계 열 레벨을 명확한 색상 코드 지표로 표시.",
+    t_normal: "정상", t_normal_sub: "스로틀링 없음 — 최대 성능", t_normal_badge: "좋음",
+    t_warm: "약간 뜨거움", t_warm_sub: "보통 부하 — 팬 회전 증가", t_warm_badge: "주의",
+    t_hot: "고온", t_hot_sub: "스로틀링 작동 중 — 성능 저하", t_hot_badge: "스로틀링",
+    t_critical: "위험", t_critical_sub: "심각한 저하 — 무거운 작업을 닫으세요", t_critical_badge: "⚠ 위험",
+    oss_title: "100% 오픈 소스", oss_releases: "릴리스",
+    oss_desc: "모든 코드가 MIT 라이선스로 GitHub에 공개. 원격 측정 없음, 분석 없음, 숨겨진 네트워크 요청 없음.",
+    coffee_title: "MacMonitor가 마음에 드시나요?",
+    coffee_desc: "무료이며 앞으로도 무료입니다. Mac 과열을 막아줬다면 커피 한 잔 사주세요!",
+    coffee_btn: "☕ 커피 사주기",
+    footer_download: "다운로드", footer_made: "Mac 커뮤니티를 위해 ❤️ 로 만들었습니다"
+  },
+  zh: {
+    nav_github: "GitHub", nav_coffee: "☕ 支持",
+    badge_text: "⚡ 免费 & 开源 MIT",
+    hero_title: "你的 Mac 体征，<br><span class=\"accent\">始终尽在眼前</span>",
+    hero_sub: "CPU 温度、内存、磁盘和电池——在菜单栏实时显示。支持 Apple Silicon 和 Intel 的通用二进制文件。",
+    btn_download: "⬇ 下载 macOS 版", btn_source: "查看源代码",
+    hero_meta: "macOS 13 Ventura 及以上 • 463 KB • v1.0 • MIT 许可证",
+    mb_normal: "正常",
+    features_label: "功能", features_title: "一目了然",
+    features_sub: "无冗余。无遥测。纯原生 Swift — 零第三方依赖。",
+    feat_cpu_title: "CPU 温度", feat_cpu_desc: "使用 Apple ProcessInfo API 即时提示正常、偏热、过热和危急四种状态。",
+    feat_mem_title: "内存使用率", feat_mem_desc: "实时跟踪活跃 + 有线 + 压缩内存，显示百分比和绝对值。",
+    feat_disk_title: "磁盘空间", feat_disk_desc: "主卷的已用和可用空间 — 每 5 分钟更新一次。",
+    feat_bat_title: "电池续航", feat_bat_desc: "剩余时间或充满所需时间。无电池的台式 Mac 上不显示。",
+    thermal_label: "温度状态", thermal_title: "了解你的 CPU",
+    thermal_sub: "MacMonitor 将 Apple 的四个温度级别映射为清晰的彩色指标。",
+    t_normal: "正常", t_normal_sub: "无节流 — 满性能", t_normal_badge: "一切正常",
+    t_warm: "偏热", t_warm_sub: "中等负载 — 风扇加速", t_warm_badge: "注意",
+    t_hot: "过热", t_hot_sub: "节流中 — 性能下降", t_hot_badge: "节流中",
+    t_critical: "危急", t_critical_sub: "严重下降 — 立即关闭重型任务", t_critical_badge: "⚠ 危急",
+    oss_title: "100% 开源", oss_releases: "版本发布",
+    oss_desc: "所有代码以 MIT 许可证在 GitHub 上公开。无遥测，无分析，无隐藏网络请求。",
+    coffee_title: "喜欢 MacMonitor 吗？",
+    coffee_desc: "它永远免费。如果它让你的 Mac 免于过热，请请我喝杯咖啡！",
+    coffee_btn: "☕ 请喝咖啡",
+    footer_download: "下载", footer_made: "为 Mac 社区用 ❤️ 打造"
+  },
+  hi: {
+    nav_github: "GitHub", nav_coffee: "☕ समर्थन",
+    badge_text: "⚡ मुफ़्त & ओपन सोर्स MIT",
+    hero_title: "आपके Mac के संकेत,<br><span class=\"accent\">हमेशा नज़र में</span>",
+    hero_sub: "CPU तापमान, RAM, डिस्क और बैटरी — मेनू बार में लाइव। Apple Silicon और Intel के लिए Universal Binary।",
+    btn_download: "⬇ macOS के लिए डाउनलोड करें", btn_source: "सोर्स देखें",
+    hero_meta: "macOS 13 Ventura+ • 463 KB • v1.0 • MIT लाइसेंस",
+    mb_normal: "सामान्य",
+    features_label: "विशेषताएं", features_title: "सब कुछ एक नज़र में",
+    features_sub: "कोई ब्लोट नहीं। कोई टेलीमेट्री नहीं। शुद्ध नेटिव Swift — शून्य थर्ड-पार्टी निर्भरता।",
+    feat_cpu_title: "CPU तापमान", feat_cpu_desc: "Apple के ProcessInfo API का उपयोग करके सामान्य, गर्म, बहुत गर्म और खतरनाक अवस्थाओं के लिए तत्काल अलर्ट।",
+    feat_mem_title: "RAM उपयोग", feat_mem_desc: "सक्रिय + वायर्ड + संपीड़ित मेमोरी को प्रतिशत और निरपेक्ष मानों के साथ रियल टाइम में ट्रैक किया गया।",
+    feat_disk_title: "डिस्क स्थान", feat_disk_desc: "मुख्य वॉल्यूम पर उपयोग किया गया और मुक्त स्थान — हर 5 मिनट में अपडेट होता है।",
+    feat_bat_title: "बैटरी जीवन", feat_bat_desc: "शेष समय या पूर्ण चार्ज तक का समय। बिना बैटरी वाले डेस्कटॉप Mac पर छुपा हुआ।",
+    thermal_label: "तापमान अवस्थाएं", thermal_title: "अपनी CPU को समझें",
+    thermal_sub: "MacMonitor Apple के चार तापमान स्तरों को स्पष्ट, रंग-कोडित संकेतकों में मैप करता है।",
+    t_normal: "सामान्य", t_normal_sub: "कोई थ्रॉटलिंग नहीं — पूर्ण प्रदर्शन", t_normal_badge: "सब ठीक",
+    t_warm: "गर्म", t_warm_sub: "मध्यम लोड — पंखे तेज हो रहे हैं", t_warm_badge: "ध्यान दें",
+    t_hot: "बहुत गर्म", t_hot_sub: "सक्रिय थ्रॉटलिंग — प्रदर्शन कम हुआ", t_hot_badge: "थ्रॉटलिंग",
+    t_critical: "खतरनाक", t_critical_sub: "गंभीर कमी — भारी कार्य बंद करें", t_critical_badge: "⚠ खतरनाक",
+    oss_title: "100% ओपन सोर्स", oss_releases: "रिलीज़",
+    oss_desc: "सभी कोड MIT लाइसेंस के तहत GitHub पर है। कोई टेलीमेट्री नहीं, कोई एनालिटिक्स नहीं, कोई छुपी हुई नेटवर्क रिक्वेस्ट नहीं।",
+    coffee_title: "MacMonitor पसंद आया?",
+    coffee_desc: "यह मुफ़्त है और हमेशा रहेगा। अगर इसने आपके Mac को ओवरहीट होने से बचाया तो एक कॉफ़ी ज़रूर पिलाएं!",
+    coffee_btn: "☕ कॉफ़ी पिलाएं",
+    footer_download: "डाउनलोड", footer_made: "Mac समुदाय के लिए ❤️ के साथ बनाया"
+  }
+};
+
+const SUPPORTED = Object.keys(TRANSLATIONS);
+const LANG_NAMES = {
+  en:"English", pt:"Português", es:"Español", fr:"Français",
+  de:"Deutsch", ja:"日本語", ko:"한국어", zh:"中文", hi:"हिन्दी"
+};
+
+function detectLang() {
+  const url = new URLSearchParams(window.location.search).get("lang");
+  if (url && SUPPORTED.includes(url)) return url;
+  const stored = localStorage.getItem("mm_lang");
+  if (stored && SUPPORTED.includes(stored)) return stored;
+  const nav = (navigator.language || "en").split("-")[0].toLowerCase();
+  return SUPPORTED.includes(nav) ? nav : "en";
+}
+
+function applyLang(lang) {
+  const T = TRANSLATIONS[lang] || TRANSLATIONS.en;
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (T[key] !== undefined) el.innerHTML = T[key];
+  });
+  document.getElementById("lang-select").value = lang;
+  localStorage.setItem("mm_lang", lang);
+  const url = new URL(window.location.href);
+  url.searchParams.set("lang", lang);
+  window.history.replaceState({}, "", url.toString());
+}
+
+function buildLangSelect() {
+  const sel = document.getElementById("lang-select");
+  SUPPORTED.forEach(code => {
+    const opt = document.createElement("option");
+    opt.value = code; opt.textContent = LANG_NAMES[code];
+    sel.appendChild(opt);
+  });
+  sel.addEventListener("change", () => applyLang(sel.value));
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  buildLangSelect();
+  applyLang(detectLang());
+});
+</script>
+</body>
+</html>

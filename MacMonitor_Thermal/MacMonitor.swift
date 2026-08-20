@@ -67,9 +67,45 @@ class MetricRowView: NSView {
 
 class HeaderView:NSView{
     override func draw(_ dirtyRect:NSRect){
-        ("MacMonitor Premium" as NSString).draw(at:NSPoint(x:14,y:24),withAttributes:[.font:NSFont.systemFont(ofSize:13,weight:.bold),.foregroundColor:NSColor.labelColor])
-        ("Intel • Ventura • ThermalState • Zero Cost" as NSString).draw(at:NSPoint(x:14,y:8),withAttributes:[.font:NSFont.systemFont(ofSize:10,weight:.regular),.foregroundColor:NSColor.secondaryLabelColor])
+        ("MacMonitor" as NSString).draw(at:NSPoint(x:14,y:24),withAttributes:[.font:NSFont.systemFont(ofSize:13,weight:.bold),.foregroundColor:NSColor.labelColor])
+        let ver = ProcessInfo.processInfo.operatingSystemVersion
+        let os  = "macOS \(ver.majorVersion).\(ver.minorVersion).\(ver.patchVersion)"
+        #if arch(arm64)
+        let chip = "Apple Silicon"
+        #else
+        let chip = "Intel"
+        #endif
+        ("\(chip) • \(os) • Open Source MIT" as NSString).draw(at:NSPoint(x:14,y:8),withAttributes:[.font:NSFont.systemFont(ofSize:10,weight:.regular),.foregroundColor:NSColor.secondaryLabelColor])
     }
+}
+
+class CoffeeBannerView: NSView {
+    var onSupport: (()->Void)?
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        wantsLayer = true
+        layer?.backgroundColor = NSColor(calibratedRed:1.0, green:0.85, blue:0.2, alpha:1.0).cgColor
+        layer?.cornerRadius = 8
+        let btn = NSButton(title: L("support_button"), target:self, action:#selector(tapped))
+        btn.bezelStyle = .rounded
+        btn.controlSize = .regular
+        btn.font = .systemFont(ofSize:11, weight:.semibold)
+        btn.frame = NSRect(x:frame.width-108, y:9, width:96, height:26)
+        btn.wantsLayer = true
+        btn.layer?.backgroundColor = NSColor.black.cgColor
+        btn.layer?.cornerRadius = 6
+        btn.contentTintColor = .white
+        btn.isBordered = false
+        addSubview(btn)
+    }
+    required init?(coder:NSCoder){fatalError()}
+    override func draw(_ dirtyRect:NSRect){
+        super.draw(dirtyRect)
+        (L("support_banner") as NSString).draw(
+            at:NSPoint(x:14,y:15),
+            withAttributes:[.font:NSFont.systemFont(ofSize:12,weight:.semibold),.foregroundColor:NSColor.black])
+    }
+    @objc func tapped(){ onSupport?() }
 }
 
 func PowerSourceCallback(_ ctx: UnsafeMutableRawPointer?){
@@ -80,11 +116,13 @@ func PowerSourceCallback(_ ctx: UnsafeMutableRawPointer?){
 
 class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
     var statusItem:NSStatusItem!
+    var onboardingWC: OnboardingWindowController?
     var settings = MonitorSettings.load()
     var thermalState: ProcessInfo.ThermalState = .nominal
     var memPercent:Double=0; var memUsed:UInt64=0; var memTotal:UInt64=0
     var diskPercent:Double=0; var diskTotal:UInt64=0; var diskFree:UInt64=0; var diskUsed:UInt64=0
     var batteryPercent:Int=0; var batteryTime:Int = -1; var batteryCharging=false; var batteryFullyCharged=false
+    var hasBattery = false
     var powerSource:CFRunLoopSource?
     var settingsWindow: NSWindow?
     var settingCheckboxes: [NSButton] = []
@@ -96,7 +134,19 @@ class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
     let okGreen      = NSColor(calibratedRed:0.2, green:0.78, blue:0.35, alpha:0.9)
 
     func applicationDidFinishLaunching(_ notification:Notification){
-        NSApp.setActivationPolicy(.accessory)
+        let isFirst = !UserDefaults.standard.bool(forKey:"hasLaunchedBefore")
+        if isFirst {
+            UserDefaults.standard.set(true, forKey:"hasLaunchedBefore")
+            onboardingWC = OnboardingWindowController()
+            onboardingWC?.showWindow(nil)
+            NSApp.activate(ignoringOtherApps:true)
+            NotificationCenter.default.addObserver(self, selector:#selector(startMonitoring), name:NSNotification.Name("OnboardingFinished"), object:nil)
+            return
+        }
+        startMonitoring()
+    }
+
+    @objc func startMonitoring(){
         statusItem=NSStatusBar.system.statusItem(withLength:NSStatusItem.variableLength)
         let menu=NSMenu(); menu.delegate=self
         let header=NSMenuItem(); header.view=HeaderView(frame:NSRect(x:0,y:0,width:320,height:44))
@@ -160,8 +210,12 @@ class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
     func fetchBattery(){
         guard let blob=IOPSCopyPowerSourcesInfo()?.takeRetainedValue(),
               let list=IOPSCopyPowerSourcesList(blob)?.takeRetainedValue() as? [CFTypeRef],
+              !list.isEmpty,
               let src=list.first,
-              let info=IOPSGetPowerSourceDescription(blob,src)?.takeUnretainedValue() as? [String:Any] else {return}
+              let info=IOPSGetPowerSourceDescription(blob,src)?.takeUnretainedValue() as? [String:Any],
+              let type=info[kIOPSTypeKey as String] as? String, type == kIOPSInternalBatteryType
+        else { hasBattery=false; return }
+        hasBattery=true
         batteryPercent=info[kIOPSCurrentCapacityKey as String] as? Int ?? 0
         batteryCharging=info[kIOPSIsChargingKey as String] as? Bool ?? false
         batteryFullyCharged=info[kIOPSIsChargedKey as String] as? Bool ?? false
@@ -175,18 +229,18 @@ class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
         return gb>=1 ? String(format:"%.1f GB",gb) : String(format:"%.0f MB",Double(b)/1024/1024)
     }
     func formatTime(_ m:Int)->String{
-        if m<0{return "--:--"}
-        if m==0 && batteryFullyCharged{return "Cheia"}
+        if m<0 { return L("label_time_unknown") }
+        if m==0 && batteryFullyCharged { return L("label_battery_full") }
         return String(format:"%d:%02d",m/60,m%60)
     }
 
     func thermalInfo()->(title:String,sub:String,value:String,pct:Double,tint:NSColor,isCrit:Bool,symbol:String){
         switch thermalState {
-        case .nominal:  return ("Processador","Normal • Sem throttling","Normal",20,neutralIcon,false,"thermometer.low")
-        case .fair:     return ("Processador","Morno • Carga moderada","Morno",50,warnOrange,false,"thermometer.medium")
-        case .serious:  return ("Processador","Quente • Throttling ativo","Quente",80,critRed,true,"thermometer.high")
-        case .critical: return ("Processador","Crítico • Redução severa","Crítico",100,critRed,true,"thermometer.sun.fill")
-        @unknown default: return ("Processador","Desconhecido","--",0,neutralIcon,false,"thermometer.medium")
+        case .nominal:  return (L("label_processor"),L("thermal_sub_normal"), L("thermal_normal"), 20,neutralIcon,false,"thermometer.low")
+        case .fair:     return (L("label_processor"),L("thermal_sub_warm"),   L("thermal_warm"),   50,warnOrange, false,"thermometer.medium")
+        case .serious:  return (L("label_processor"),L("thermal_sub_hot"),    L("thermal_hot"),    80,critRed,    true, "thermometer.high")
+        case .critical: return (L("label_processor"),L("thermal_sub_critical"),L("thermal_critical"),100,critRed, true, "thermometer.sun.fill")
+        @unknown default: return (L("label_processor"),L("thermal_unknown"),  L("thermal_unknown"),  0,neutralIcon,false,"thermometer.medium")
         }
     }
     func colorForMem(_ p:Double)->(tint:NSColor,isCrit:Bool){
@@ -244,7 +298,7 @@ class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
                 let dCol=d.isCrit ? self.critRed : (self.diskPercent>80 ? self.warnOrange : self.neutralText)
                 segs.append(self.makeSegment(symbol:"internaldrive",text:String(format:"%.0f%%",self.diskPercent),color:dCol,showDot:d.isCrit||self.diskPercent>80,isCrit:d.isCrit))
             }
-            if self.settings.showBattery {
+            if self.settings.showBattery && self.hasBattery {
                 let bIsLow=self.batteryPercent<15 && !self.batteryCharging
                 let bCol=bIsLow ? self.critRed : (self.batteryCharging ? self.okGreen : self.neutralText)
                 let bSym:String={
@@ -270,7 +324,6 @@ class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
 
     func updateMenuDetails(){
         guard let menu=statusItem.menu else {return}
-        // Rebuild metric items (keep header=0, separator=1)
         while menu.items.count > 2 { menu.removeItem(at:2) }
         if settings.showCPU {
             let t=thermalInfo()
@@ -279,18 +332,20 @@ class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
         }
         if settings.showMemory {
             let m=colorForMem(memPercent)
-            let mDetail=String(format:"%@ usados de %@",formatBytes(memUsed),formatBytes(memTotal))
-            let item=NSMenuItem(); item.view=MetricRowView(frame:NSRect(x:0,y:0,width:320,height:44),symbol:"memorychip",title:"Memória",sub:mDetail,value:String(format:"%.0f%%",memPercent),pct:memPercent,tint:m.tint,isCritical:m.isCrit)
+            let mDetail=String(format: L("label_used_of"), formatBytes(memUsed), formatBytes(memTotal))
+            let item=NSMenuItem(); item.view=MetricRowView(frame:NSRect(x:0,y:0,width:320,height:44),symbol:"memorychip",title:L("label_memory"),sub:mDetail,value:String(format:"%.0f%%",memPercent),pct:memPercent,tint:m.tint,isCritical:m.isCrit)
             menu.addItem(item)
         }
         if settings.showDisk {
             let d=colorForDisk(diskPercent)
-            let dDetail=String(format:"%@ usados • %@ livres",formatBytes(diskUsed),formatBytes(diskFree))
-            let item=NSMenuItem(); item.view=MetricRowView(frame:NSRect(x:0,y:0,width:320,height:44),symbol:"internaldrive.fill",title:"Disco",sub:dDetail,value:String(format:"%.0f%%",diskPercent),pct:diskPercent,tint:d.tint,isCritical:d.isCrit)
+            let dDetail=String(format: L("label_disk_detail"), formatBytes(diskUsed), formatBytes(diskFree))
+            let item=NSMenuItem(); item.view=MetricRowView(frame:NSRect(x:0,y:0,width:320,height:44),symbol:"internaldrive.fill",title:L("label_disk"),sub:dDetail,value:String(format:"%.0f%%",diskPercent),pct:diskPercent,tint:d.tint,isCritical:d.isCrit)
             menu.addItem(item)
         }
-        if settings.showBattery {
-            let bDetail=batteryCharging ? String(format:"%d%% • %@ p/ carga",batteryPercent,formatTime(batteryTime)) : String(format:"%d%% • %@ restantes",batteryPercent,formatTime(batteryTime))
+        if settings.showBattery && hasBattery {
+            let bDetail = batteryCharging
+                ? String(format: L("label_battery_charging"), batteryPercent, formatTime(batteryTime))
+                : String(format: L("label_battery_remaining"), batteryPercent, formatTime(batteryTime))
             let bTint=batteryPercent<15 && !batteryCharging ? critRed : (batteryCharging ? okGreen : neutralIcon)
             let bSym:String={
                 if batteryCharging{return "battery.100.bolt"}
@@ -302,17 +357,20 @@ class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
                 default:      return "battery.0"
                 }
             }()
-            let item=NSMenuItem(); item.view=MetricRowView(frame:NSRect(x:0,y:0,width:320,height:44),symbol:bSym,title:"Bateria",sub:bDetail,value:formatTime(batteryTime),pct:Double(batteryPercent),tint:bTint,isCritical:batteryPercent<15 && !batteryCharging)
+            let item=NSMenuItem(); item.view=MetricRowView(frame:NSRect(x:0,y:0,width:320,height:44),symbol:bSym,title:L("label_battery"),sub:bDetail,value:formatTime(batteryTime),pct:Double(batteryPercent),tint:bTint,isCritical:batteryPercent<15 && !batteryCharging)
             menu.addItem(item)
         }
+        let banner=CoffeeBannerView(frame:NSRect(x:0,y:0,width:320,height:44))
+        banner.onSupport={ [weak self] in self?.openCoffee() }
+        let coffeeItem=NSMenuItem(); coffeeItem.view=banner
+        menu.addItem(coffeeItem)
         menu.addItem(NSMenuItem.separator())
-        let prefs=NSMenuItem(title:"Preferências...",action:#selector(openSettings),keyEquivalent:",")
+        let prefs=NSMenuItem(title: L("menu_preferences"), action:#selector(openSettings),keyEquivalent:",")
+        prefs.target=self
         prefs.image=NSImage(systemSymbolName:"gearshape",accessibilityDescription:nil)
         menu.addItem(prefs)
-        let coffee=NSMenuItem(title:"☕ Pague um café",action:#selector(openCoffee),keyEquivalent:"")
-        coffee.image=NSImage(systemSymbolName:"cup.and.saucer",accessibilityDescription:nil)
-        menu.addItem(coffee)
-        let quit=NSMenuItem(title:"Sair",action:#selector(quit),keyEquivalent:"q")
+        let quit=NSMenuItem(title: L("menu_quit"), action:#selector(quit),keyEquivalent:"q")
+        quit.target=self
         quit.image=NSImage(systemSymbolName:"power",accessibilityDescription:nil)
         menu.addItem(quit)
     }
@@ -323,34 +381,52 @@ class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
 
     @objc func openSettings(){
         if settingsWindow == nil {
-            let w=NSWindow(contentRect:NSRect(x:0,y:0,width:260,height:210),styleMask:[.titled,.closable],backing:.buffered,defer:false)
-            w.title="MacMonitor — Preferências"
+            let w=NSWindow(contentRect:NSRect(x:0,y:0,width:280,height:250),styleMask:[.titled,.closable],backing:.buffered,defer:false)
+            w.title = L("settings_title")
             w.isReleasedWhenClosed=false
-            let view=NSView(frame:NSRect(x:0,y:0,width:260,height:210))
+            let view=NSView(frame:NSRect(x:0,y:0,width:280,height:250))
 
-            let lbl=NSTextField(labelWithString:"Mostrar na barra de menu:")
-            lbl.frame=NSRect(x:20,y:175,width:220,height:20)
+            let lbl=NSTextField(labelWithString: L("settings_show_in_menubar"))
+            lbl.frame=NSRect(x:20,y:215,width:240,height:20)
             lbl.font = .systemFont(ofSize:13,weight:.semibold)
             view.addSubview(lbl)
 
             let items:[(String,Bool)] = [
-                ("CPU / Processador", settings.showCPU),
-                ("Memória RAM",       settings.showMemory),
-                ("Disco (HD/SSD)",    settings.showDisk),
-                ("Bateria",           settings.showBattery)
+                (L("settings_cpu"),     settings.showCPU),
+                (L("settings_memory"),  settings.showMemory),
+                (L("settings_disk"),    settings.showDisk),
+                (L("settings_battery"), settings.showBattery)
             ]
             settingCheckboxes=[]
             for (i,(label,state)) in items.enumerated(){
                 let cb=NSButton(checkboxWithTitle:label,target:self,action:#selector(toggleSetting(_:)))
-                cb.frame=NSRect(x:20,y:145-i*30,width:220,height:22)
+                cb.frame=NSRect(x:20,y:185-i*30,width:240,height:22)
                 cb.state=state ? .on : .off
                 cb.tag=i
                 view.addSubview(cb)
                 settingCheckboxes.append(cb)
             }
 
-            let restore=NSButton(title:"Restaurar Padrão",target:self,action:#selector(restoreSettings))
-            restore.frame=NSRect(x:20,y:20,width:140,height:28)
+            // Language selector
+            let langLabel=NSTextField(labelWithString: L("settings_language_label")+":")
+            langLabel.frame=NSRect(x:20,y:72,width:90,height:20)
+            langLabel.font = .systemFont(ofSize:12)
+            view.addSubview(langLabel)
+
+            let langPopup=NSPopUpButton(frame:NSRect(x:114,y:68,width:146,height:26),pullsDown:false)
+            for lang in LocalizationManager.supportedLanguages {
+                langPopup.addItem(withTitle: lang.name)
+                langPopup.lastItem?.representedObject = lang.code
+            }
+            let currentCode = LocalizationManager.shared.selectedCode
+            let idx = LocalizationManager.supportedLanguages.firstIndex(where:{ $0.code == currentCode }) ?? 0
+            langPopup.selectItem(at: idx)
+            langPopup.target = self
+            langPopup.action = #selector(languageChanged(_:))
+            view.addSubview(langPopup)
+
+            let restore=NSButton(title: L("settings_restore"), target:self, action:#selector(restoreSettings))
+            restore.frame=NSRect(x:20,y:20,width:160,height:28)
             restore.bezelStyle = .rounded
             view.addSubview(restore)
 
@@ -375,8 +451,19 @@ class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
         updateMenuDetails()
     }
 
+    @objc func languageChanged(_ sender: NSPopUpButton) {
+        guard let code = sender.selectedItem?.representedObject as? String else { return }
+        LocalizationManager.shared.selectedCode = code
+        LocalizationManager.shared.reload()
+        updateStatusTitle()
+        updateMenuDetails()
+        settingsWindow?.close()
+        settingsWindow = nil
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.1){ self.openSettings() }
+    }
+
     @objc func openCoffee(){
-        NSWorkspace.shared.open(URL(string:"https://buymeacoffee.com/bulldozeStore")!)
+        NSWorkspace.shared.open(URL(string:"https://buymeacoffee.com/bulldozestore")!)
     }
 
     @objc func restoreSettings(){
@@ -390,5 +477,3 @@ class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
         updateMenuDetails()
     }
 }
-
-let delegate=AppDelegate(); let app=NSApplication.shared; app.delegate=delegate; app.setActivationPolicy(.accessory); app.run()
