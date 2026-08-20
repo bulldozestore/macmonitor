@@ -13,7 +13,7 @@
     <key>LSUIElement</key><true/>
     <key>NSPrincipalClass</key><string>NSApplication</string>
     <key>NSHighResolutionCapable</key><true/>
-    <key>NSHumanReadableCopyright</key><string>© 2026 goiascontab-ui. MIT License.</string>
+    <key>NSHumanReadableCopyright</key><string>© 2026 bulldozestore. MIT License.</string>
     <key>LSMinimumSystemVersion</key><string>13.0</string>
 </dict>
 </plist>
