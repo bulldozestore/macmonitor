@@ -379,6 +379,14 @@ class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
             banner.onSupport={ [weak self] in self?.openCoffee() }
             let coffeeItem=NSMenuItem(); coffeeItem.view=banner
             menu.addItem(coffeeItem)
+            let kofi=NSMenuItem(title:"  Ko-fi", action:#selector(openKofi), keyEquivalent:"")
+            kofi.target=self
+            kofi.image=NSImage(systemSymbolName:"heart.fill", accessibilityDescription:nil)
+            menu.addItem(kofi)
+            let sponsors=NSMenuItem(title:"  GitHub Sponsors", action:#selector(openSponsors), keyEquivalent:"")
+            sponsors.target=self
+            sponsors.image=NSImage(systemSymbolName:"star.fill", accessibilityDescription:nil)
+            menu.addItem(sponsors)
         }
         menu.addItem(NSMenuItem.separator())
         let prefs=NSMenuItem(title: L("menu_preferences"), action:#selector(openSettings),keyEquivalent:",")
@@ -480,6 +488,12 @@ class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
 
     @objc func openCoffee(){
         NSWorkspace.shared.open(URL(string:"https://buymeacoffee.com/bulldozestore")!)
+    }
+    @objc func openKofi(){
+        NSWorkspace.shared.open(URL(string:"https://ko-fi.com/bulldozestore")!)
+    }
+    @objc func openSponsors(){
+        NSWorkspace.shared.open(URL(string:"https://github.com/sponsors/bulldozestore")!)
     }
 
     @objc func restoreSettings(){
