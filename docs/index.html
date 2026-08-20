@@ -138,6 +138,11 @@
     margin-top: 20px;
     font-size: 13px; color: var(--sub);
   }
+  .gatekeeper-note {
+    margin-top: 10px;
+    font-size: 12px; color: var(--sub);
+    opacity: 0.7;
+  }
 
   /* MENUBAR PREVIEW */
   .menubar-preview {
@@ -291,6 +296,7 @@
       <a href="https://github.com/goiascontab-ui/macmonitor" target="_blank" rel="noopener" class="btn-secondary" data-i18n="btn_source">View Source</a>
     </div>
     <p class="hero-meta" data-i18n="hero_meta">macOS 13 Ventura+ • 463 KB • v1.0 • MIT License</p>
+    <p class="gatekeeper-note" data-i18n="gatekeeper_note">⚠ First launch: right-click the app → Open to bypass macOS Gatekeeper.</p>
   </section>
 
   <div class="menubar-preview">
@@ -447,7 +453,8 @@ const TRANSLATIONS = {
     coffee_title: "Enjoying MacMonitor?",
     coffee_desc: "It's free and always will be. If it saves your Mac from overheating, consider buying me a coffee!",
     coffee_btn: "☕ Buy me a coffee",
-    footer_download: "Download", footer_made: "Made with ❤️ for the Mac community"
+    footer_download: "Download", footer_made: "Made with ❤️ for the Mac community",
+    gatekeeper_note: "⚠ First launch: right-click the app → Open to bypass macOS Gatekeeper."
   },
   pt: {
     nav_github: "GitHub", nav_coffee: "☕ Apoiar",
@@ -474,7 +481,8 @@ const TRANSLATIONS = {
     coffee_title: "Curtiu o MacMonitor?",
     coffee_desc: "É gratuito e sempre será. Se ele salvou seu Mac de superaquecer, considere pagar um café!",
     coffee_btn: "☕ Pagar um café",
-    footer_download: "Baixar", footer_made: "Feito com ❤️ para a comunidade Mac"
+    footer_download: "Baixar", footer_made: "Feito com ❤️ para a comunidade Mac",
+    gatekeeper_note: "⚠ Primeiro acesso: clique com botão direito no app → Abrir para contornar o Gatekeeper do macOS."
   },
   es: {
     nav_github: "GitHub", nav_coffee: "☕ Apoyar",
@@ -501,7 +509,8 @@ const TRANSLATIONS = {
     coffee_title: "¿Disfrutas MacMonitor?",
     coffee_desc: "Es gratuito y siempre lo será. ¡Si salvó tu Mac del sobrecalentamiento, considera invitarme un café!",
     coffee_btn: "☕ Invitar un café",
-    footer_download: "Descargar", footer_made: "Hecho con ❤️ para la comunidad Mac"
+    footer_download: "Descargar", footer_made: "Hecho con ❤️ para la comunidad Mac",
+    gatekeeper_note: "⚠ Primer uso: clic derecho en la app → Abrir para omitir el Gatekeeper de macOS."
   },
   fr: {
     nav_github: "GitHub", nav_coffee: "☕ Soutenir",
@@ -528,7 +537,8 @@ const TRANSLATIONS = {
     coffee_title: "Vous appréciez MacMonitor ?",
     coffee_desc: "C'est gratuit et le restera. S'il a sauvé votre Mac de la surchauffe, offrez-moi un café !",
     coffee_btn: "☕ Offrir un café",
-    footer_download: "Télécharger", footer_made: "Fait avec ❤️ pour la communauté Mac"
+    footer_download: "Télécharger", footer_made: "Fait avec ❤️ pour la communauté Mac",
+    gatekeeper_note: "⚠ Premier lancement : clic droit sur l'app → Ouvrir pour contourner le Gatekeeper de macOS."
   },
   de: {
     nav_github: "GitHub", nav_coffee: "☕ Unterstützen",
@@ -555,7 +565,8 @@ const TRANSLATIONS = {
     coffee_title: "MacMonitor gefällt dir?",
     coffee_desc: "Es ist kostenlos und bleibt es auch. Wenn es deinen Mac vor Überhitzung bewahrt hat, spendier mir einen Kaffee!",
     coffee_btn: "☕ Kaffee spendieren",
-    footer_download: "Herunterladen", footer_made: "Mit ❤️ für die Mac-Community"
+    footer_download: "Herunterladen", footer_made: "Mit ❤️ für die Mac-Community",
+    gatekeeper_note: "⚠ Erster Start: Rechtsklick auf die App → Öffnen, um macOS Gatekeeper zu umgehen."
   },
   ja: {
     nav_github: "GitHub", nav_coffee: "☕ サポート",
@@ -582,7 +593,8 @@ const TRANSLATIONS = {
     coffee_title: "MacMonitor を気に入りましたか？",
     coffee_desc: "無料で今後も無料です。Mac の過熱を防いでくれたなら、コーヒー一杯おごってください！",
     coffee_btn: "☕ コーヒーをおごる",
-    footer_download: "ダウンロード", footer_made: "Mac コミュニティへ ❤️ を込めて"
+    footer_download: "ダウンロード", footer_made: "Mac コミュニティへ ❤️ を込めて",
+    gatekeeper_note: "⚠ 初回起動: アプリを右クリック → 開く で macOS Gatekeeper を回避してください。"
   },
   ko: {
     nav_github: "GitHub", nav_coffee: "☕ 후원",
@@ -609,7 +621,8 @@ const TRANSLATIONS = {
     coffee_title: "MacMonitor가 마음에 드시나요?",
     coffee_desc: "무료이며 앞으로도 무료입니다. Mac 과열을 막아줬다면 커피 한 잔 사주세요!",
     coffee_btn: "☕ 커피 사주기",
-    footer_download: "다운로드", footer_made: "Mac 커뮤니티를 위해 ❤️ 로 만들었습니다"
+    footer_download: "다운로드", footer_made: "Mac 커뮤니티를 위해 ❤️ 로 만들었습니다",
+    gatekeeper_note: "⚠ 첫 실행: 앱을 오른쪽 클릭 → 열기 를 눌러 macOS Gatekeeper를 우회하세요."
   },
   zh: {
     nav_github: "GitHub", nav_coffee: "☕ 支持",
@@ -636,7 +649,8 @@ const TRANSLATIONS = {
     coffee_title: "喜欢 MacMonitor 吗？",
     coffee_desc: "它永远免费。如果它让你的 Mac 免于过热，请请我喝杯咖啡！",
     coffee_btn: "☕ 请喝咖啡",
-    footer_download: "下载", footer_made: "为 Mac 社区用 ❤️ 打造"
+    footer_download: "下载", footer_made: "为 Mac 社区用 ❤️ 打造",
+    gatekeeper_note: "⚠ 首次启动：右键点击 app → 打开，绕过 macOS Gatekeeper。"
   },
   hi: {
     nav_github: "GitHub", nav_coffee: "☕ समर्थन",
@@ -663,7 +677,8 @@ const TRANSLATIONS = {
     coffee_title: "MacMonitor पसंद आया?",
     coffee_desc: "यह मुफ़्त है और हमेशा रहेगा। अगर इसने आपके Mac को ओवरहीट होने से बचाया तो एक कॉफ़ी ज़रूर पिलाएं!",
     coffee_btn: "☕ कॉफ़ी पिलाएं",
-    footer_download: "डाउनलोड", footer_made: "Mac समुदाय के लिए ❤️ के साथ बनाया"
+    footer_download: "डाउनलोड", footer_made: "Mac समुदाय के लिए ❤️ के साथ बनाया",
+    gatekeeper_note: "⚠ पहली बार खोलने पर: app पर राइट-क्लिक → Open करें ताकि macOS Gatekeeper को बायपास किया जा सके।"
   }
 };
 
