@@ -18,14 +18,4 @@
     <xhtml:link rel="alternate" hreflang="hi" href="https://macmonitor.pages.dev/?lang=hi"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://macmonitor.pages.dev/"/>
   </url>
-  <url>
-    <loc>https://macmonitor.pages.dev/#install</loc>
-    <lastmod>2026-08-19</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://macmonitor.pages.dev/#features</loc>
-    <lastmod>2026-08-19</lastmod>
-    <priority>0.8</priority>
-  </url>
 </urlset>

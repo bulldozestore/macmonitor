@@ -4,7 +4,7 @@ class OnboardingWindowController: NSWindowController {
     convenience init() {
         let window = NSWindow(
             contentRect: NSRect(x:0, y:0, width:620, height:610),
-            styleMask: [.titled, .closable],
+            styleMask: [.titled],
             backing: .buffered,
             defer: false
         )
@@ -45,7 +45,7 @@ class OnboardingViewController: NSViewController {
         ghMain.frame = NSRect(x:56, y:40, width:340, height:16)
         footer.addSubview(ghMain)
 
-        let ghLink = NSTextField(labelWithString:"github.com/goiascontab-ui/macmonitor")
+        let ghLink = NSTextField(labelWithString:"github.com/bulldozestore/macmonitor")
         ghLink.font = .systemFont(ofSize:12, weight:.semibold)
         ghLink.textColor = .systemBlue
         ghLink.frame = NSRect(x:56, y:20, width:340, height:16)
@@ -285,7 +285,7 @@ class OnboardingViewController: NSViewController {
         NotificationCenter.default.post(name:NSNotification.Name("OnboardingFinished"), object:nil)
     }
     @objc func openGitHub() {
-        NSWorkspace.shared.open(URL(string:"https://github.com/goiascontab-ui/macmonitor")!)
+        NSWorkspace.shared.open(URL(string:"https://github.com/bulldozestore/macmonitor")!)
     }
 
     // Official GitHub Invertocat mark — converted from SVG path (viewBox 98x96) to NSBezierPath

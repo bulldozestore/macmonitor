@@ -24,7 +24,7 @@ MacMonitor uses `ProcessInfo.thermalState` — the exact same variable macOS use
 - Disk usage % via `/System/Volumes/Data`
 - Battery time remaining / to charge with dynamic icon
 - Settings panel — show/hide each metric individually, choose language
-- 9 languages: English, Português, Español, Français, Deutsch, 日本語, 한국어, 中文, हिन्दी
+- 11 languages: English, Português, Español, Français, Deutsch, Italiano, Nederlands, 日本語, 한국어, 中文, हिन्दी
 - Event-driven updates (thermalState via NotificationCenter, battery via IOPSNotification)
 - Disk updates every 5 min, everything else every 3s
 - ~0% CPU at idle, ~4 MB RAM
@@ -38,7 +38,7 @@ MacMonitor uses `ProcessInfo.thermalState` — the exact same variable macOS use
 ## Build
 
 ```bash
-git clone https://github.com/goiascontab-ui/macmonitor
+git clone https://github.com/bulldozestore/macmonitor
 cd macmonitor
 ./build.sh
 open MacMonitor.app

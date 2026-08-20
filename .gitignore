@@ -6,3 +6,4 @@ MacMonitor_universal
 MacMonitor.app/
 *.o
 *.d
+.wrangler/
