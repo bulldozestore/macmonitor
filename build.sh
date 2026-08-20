@@ -31,7 +31,7 @@ cp MacMonitor_Thermal/Info.plist "$BUNDLE/Contents/Info.plist"
 chmod +x "$BUNDLE/Contents/MacOS/MacMonitor"
 
 echo "→ Copying localizations..."
-for lang in en pt es fr de ja ko zh hi; do
+for lang in en pt es fr de it nl ja ko zh hi; do
   mkdir -p "$BUNDLE/Contents/Resources/${lang}.lproj"
   cp "MacMonitor_Thermal/${lang}.lproj/Localizable.strings" "$BUNDLE/Contents/Resources/${lang}.lproj/"
 done

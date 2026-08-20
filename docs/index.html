@@ -19,6 +19,8 @@
 <link rel="alternate" hreflang="es" href="https://macmonitor.pages.dev/?lang=es">
 <link rel="alternate" hreflang="fr" href="https://macmonitor.pages.dev/?lang=fr">
 <link rel="alternate" hreflang="de" href="https://macmonitor.pages.dev/?lang=de">
+<link rel="alternate" hreflang="it" href="https://macmonitor.pages.dev/?lang=it">
+<link rel="alternate" hreflang="nl" href="https://macmonitor.pages.dev/?lang=nl">
 <link rel="alternate" hreflang="ja" href="https://macmonitor.pages.dev/?lang=ja">
 <link rel="alternate" hreflang="ko" href="https://macmonitor.pages.dev/?lang=ko">
 <link rel="alternate" hreflang="zh" href="https://macmonitor.pages.dev/?lang=zh">
@@ -568,6 +570,62 @@ const TRANSLATIONS = {
     footer_download: "Herunterladen", footer_made: "Mit ❤️ für die Mac-Community",
     gatekeeper_note: "⚠ Erster Start: Rechtsklick auf die App → Öffnen, um macOS Gatekeeper zu umgehen."
   },
+  it: {
+    nav_github: "GitHub", nav_coffee: "☕ Supporta",
+    badge_text: "⚡ Gratuito & Open Source MIT",
+    hero_title: "I segnali vitali del tuo Mac,<br><span class=\"accent\">sempre in vista</span>",
+    hero_sub: "Temperatura CPU, RAM, disco e batteria — live nella barra dei menu. Universal Binary per Apple Silicon e Intel.",
+    btn_download: "⬇ Scarica per macOS", btn_source: "Vedi il codice",
+    hero_meta: "macOS 13 Ventura+ • 463 KB • v1.0 • Licenza MIT",
+    mb_normal: "Normale",
+    features_label: "Funzionalità", features_title: "Tutto a colpo d'occhio",
+    features_sub: "Niente bloat. Niente telemetria. Swift nativo puro — zero dipendenze di terze parti.",
+    feat_cpu_title: "Temperatura CPU", feat_cpu_desc: "Avvisi istantanei per gli stati Normale, Caldo, Surriscaldato e Critico tramite l'API ProcessInfo di Apple.",
+    feat_mem_title: "Uso RAM", feat_mem_desc: "Memoria attiva + cablata + compressa monitorata in tempo reale con percentuale e valori assoluti.",
+    feat_disk_title: "Spazio su disco", feat_disk_desc: "Spazio usato e libero sul volume principale — HD o SSD — aggiornato ogni 5 minuti.",
+    feat_bat_title: "Durata batteria", feat_bat_desc: "Tempo rimanente o tempo alla carica completa. Nascosto sui Mac desktop senza batteria.",
+    thermal_label: "Stati termici", thermal_title: "Capire la CPU",
+    thermal_sub: "MacMonitor traduce i quattro livelli termici di Apple in indicatori chiari e colorati.",
+    t_normal: "Normale", t_normal_sub: "Nessun throttling — prestazioni complete", t_normal_badge: "Tutto ok",
+    t_warm: "Caldo", t_warm_sub: "Carico moderato — ventole in aumento", t_warm_badge: "Attenzione",
+    t_hot: "Surriscaldato", t_hot_sub: "Throttling attivo — prestazioni ridotte", t_hot_badge: "Throttling",
+    t_critical: "Critico", t_critical_sub: "Riduzione severa — chiudi le app pesanti", t_critical_badge: "⚠ Critico",
+    oss_title: "100% Open Source", oss_releases: "Versioni",
+    oss_desc: "Tutto il codice è su GitHub sotto licenza MIT. Nessuna telemetria, nessuna analisi, nessuna richiesta di rete nascosta.",
+    coffee_title: "Ti piace MacMonitor?",
+    coffee_desc: "È gratuito e lo sarà sempre. Se ha salvato il tuo Mac dal surriscaldamento, offrimi un caffè!",
+    coffee_btn: "☕ Offrimi un caffè",
+    footer_download: "Scarica", footer_made: "Fatto con ❤️ per la comunità Mac",
+    gatekeeper_note: "⚠ Primo avvio: clic destro sull'app → Apri per bypassare il Gatekeeper di macOS."
+  },
+  nl: {
+    nav_github: "GitHub", nav_coffee: "☕ Steun",
+    badge_text: "⚡ Gratis & Open Source MIT",
+    hero_title: "De vitale functies van je Mac,<br><span class=\"accent\">altijd in beeld</span>",
+    hero_sub: "CPU-temperatuur, RAM, schijf en batterij — live in je menubalk. Universal Binary voor Apple Silicon en Intel.",
+    btn_download: "⬇ Download voor macOS", btn_source: "Bekijk broncode",
+    hero_meta: "macOS 13 Ventura+ • 463 KB • v1.0 • MIT-licentie",
+    mb_normal: "Normaal",
+    features_label: "Functies", features_title: "Alles in één oogopslag",
+    features_sub: "Geen bloat. Geen telemetrie. Puur native Swift — nul afhankelijkheden van derden.",
+    feat_cpu_title: "CPU-temperatuur", feat_cpu_desc: "Directe meldingen voor Normaal, Warm, Heet en Kritiek via Apple's ProcessInfo API.",
+    feat_mem_title: "RAM-gebruik", feat_mem_desc: "Actief + bekabeld + gecomprimeerd geheugen in realtime bijgehouden met percentage en absolute waarden.",
+    feat_disk_title: "Schijfruimte", feat_disk_desc: "Gebruikte en vrije ruimte op je hoofdvolume — HD of SSD — elke 5 minuten bijgewerkt.",
+    feat_bat_title: "Batterijduur", feat_bat_desc: "Resterende tijd of tijd tot volledig geladen. Verborgen op desktop-Macs zonder batterij.",
+    thermal_label: "Thermische toestanden", thermal_title: "Je CPU begrijpen",
+    thermal_sub: "MacMonitor vertaalt Apple's vier thermische niveaus naar duidelijke, kleurgecodeerde indicatoren.",
+    t_normal: "Normaal", t_normal_sub: "Geen throttling — volledige prestaties", t_normal_badge: "Alles goed",
+    t_warm: "Warm", t_warm_sub: "Matige belasting — ventilatoren draaien op", t_warm_badge: "Let op",
+    t_hot: "Heet", t_hot_sub: "Throttling actief — prestaties verminderd", t_hot_badge: "Throttling",
+    t_critical: "Kritiek", t_critical_sub: "Ernstige vermindering — sluit zware taken", t_critical_badge: "⚠ Kritiek",
+    oss_title: "100% Open Source", oss_releases: "Releases",
+    oss_desc: "Alle code staat op GitHub onder MIT-licentie. Geen telemetrie, geen analyse, geen verborgen netwerkverzoeken.",
+    coffee_title: "Waardeer je MacMonitor?",
+    coffee_desc: "Het is gratis en blijft gratis. Als het je Mac voor oververhitting heeft behoed, trakteer me dan op een koffie!",
+    coffee_btn: "☕ Trakteer op koffie",
+    footer_download: "Download", footer_made: "Gemaakt met ❤️ voor de Mac-gemeenschap",
+    gatekeeper_note: "⚠ Eerste keer starten: rechtsklik op de app → Open om macOS Gatekeeper te omzeilen."
+  },
   ja: {
     nav_github: "GitHub", nav_coffee: "☕ サポート",
     badge_text: "⚡ 無料 & オープンソース MIT",
@@ -685,7 +743,8 @@ const TRANSLATIONS = {
 const SUPPORTED = Object.keys(TRANSLATIONS);
 const LANG_NAMES = {
   en:"English", pt:"Português", es:"Español", fr:"Français",
-  de:"Deutsch", ja:"日本語", ko:"한국어", zh:"中文", hi:"हिन्दी"
+  de:"Deutsch", it:"Italiano", nl:"Nederlands",
+  ja:"日本語", ko:"한국어", zh:"中文", hi:"हिन्दी"
 };
 
 function detectLang() {

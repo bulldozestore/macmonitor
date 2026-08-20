@@ -10,6 +10,8 @@ class LocalizationManager {
         ("es", "Español"),
         ("fr", "Français"),
         ("de", "Deutsch"),
+        ("it", "Italiano"),
+        ("nl", "Nederlands"),
         ("ja", "日本語"),
         ("ko", "한국어"),
         ("zh", "中文"),

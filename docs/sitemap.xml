@@ -2,14 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://macmonitor.pages.dev/</loc>
-    <lastmod>2026-08-19</lastmod>
+    <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://macmonitor.pages.dev/?lang=en"/>
     <xhtml:link rel="alternate" hreflang="pt" href="https://macmonitor.pages.dev/?lang=pt"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://macmonitor.pages.dev/?lang=es"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://macmonitor.pages.dev/?lang=de"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://macmonitor.pages.dev/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://macmonitor.pages.dev/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://macmonitor.pages.dev/?lang=it"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://macmonitor.pages.dev/?lang=nl"/>
     <xhtml:link rel="alternate" hreflang="ja" href="https://macmonitor.pages.dev/?lang=ja"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://macmonitor.pages.dev/?lang=ko"/>
     <xhtml:link rel="alternate" hreflang="zh" href="https://macmonitor.pages.dev/?lang=zh"/>
