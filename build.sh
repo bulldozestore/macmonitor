@@ -12,17 +12,17 @@ SRCS=(
 
 FRAMEWORKS="-framework Cocoa -framework IOKit"
 
-echo "→ Compilando arm64..."
+echo "→ Compiling arm64..."
 swiftc -O -sdk "$SDK" -target arm64-apple-macosx13.0 $FRAMEWORKS "${SRCS[@]}" -o MacMonitor_arm64
 
-echo "→ Compilando x86_64..."
+echo "→ Compiling x86_64..."
 swiftc -O -sdk "$SDK" -target x86_64-apple-macosx13.0 $FRAMEWORKS "${SRCS[@]}" -o MacMonitor_x86
 
-echo "→ Criando Universal Binary..."
+echo "→ Creating Universal Binary..."
 lipo -create MacMonitor_arm64 MacMonitor_x86 -output MacMonitor_universal
 rm MacMonitor_arm64 MacMonitor_x86
 
-echo "→ Montando .app..."
+echo "→ Assembling .app bundle..."
 BUNDLE="MacMonitor.app"
 rm -rf "$BUNDLE"
 mkdir -p "$BUNDLE/Contents/MacOS" "$BUNDLE/Contents/Resources"
@@ -30,16 +30,16 @@ cp MacMonitor_universal "$BUNDLE/Contents/MacOS/MacMonitor"
 cp MacMonitor_Thermal/Info.plist "$BUNDLE/Contents/Info.plist"
 chmod +x "$BUNDLE/Contents/MacOS/MacMonitor"
 
-echo "→ Copiando localizações..."
+echo "→ Copying localizations..."
 for lang in en pt es fr de ja ko zh hi; do
   mkdir -p "$BUNDLE/Contents/Resources/${lang}.lproj"
   cp "MacMonitor_Thermal/${lang}.lproj/Localizable.strings" "$BUNDLE/Contents/Resources/${lang}.lproj/"
 done
 
-echo "→ Assinando..."
+echo "→ Code signing (ad-hoc)..."
 codesign --force --deep --sign - "$BUNDLE"
 
-echo "→ Criando DMG..."
+echo "→ Creating DMG..."
 DMG_STAGE="/tmp/macmonitor_dmg"
 rm -rf "$DMG_STAGE"; mkdir -p "$DMG_STAGE"
 cp -R "$BUNDLE" "$DMG_STAGE/"
@@ -50,5 +50,5 @@ hdiutil create -volname "MacMonitor" -srcfolder "$DMG_STAGE" -ov -format UDZO "M
 
 echo ""
 echo "✓ Universal Binary (arm64 + x86_64)"
-lipo -archs MacMonitor.app/Contents/MacOS/MacMonitor
+lipo -archs "$BUNDLE/Contents/MacOS/MacMonitor"
 echo "✓ DMG: MacMonitor-v${VERSION}.dmg"

@@ -1,8 +1,8 @@
-# MacMonitor Premium
+# MacMonitor
 
 A lightweight, native macOS menu bar monitor — CPU thermal state, RAM, disk and battery — built without an Apple Developer account.
 
-![macOS 13+](https://img.shields.io/badge/macOS-13%2B-black) ![Swift 5.8](https://img.shields.io/badge/Swift-5.8-orange) ![MIT](https://img.shields.io/badge/license-MIT-blue) [![Buy me a coffee](https://img.shields.io/badge/☕-Buy%20me%20a%20coffee-yellow)](https://buymeacoffee.com/bulldozeStore)
+![macOS 13+](https://img.shields.io/badge/macOS-13%2B-black) ![Swift 5.8](https://img.shields.io/badge/Swift-5.8-orange) ![MIT](https://img.shields.io/badge/license-MIT-blue) [![Buy me a coffee](https://img.shields.io/badge/☕-Buy%20me%20a%20coffee-yellow)](https://buymeacoffee.com/bulldozestore)
 
 ## Why not °C?
 
@@ -13,17 +13,18 @@ MacMonitor uses `ProcessInfo.thermalState` — the exact same variable macOS use
 | State | Meaning |
 |-------|---------|
 | Normal | CPU is cool, no throttling |
-| Morno | Slightly warm, moderate load |
-| Quente | Hot — throttling active |
-| Crítico | Critical — severe performance reduction |
+| Warm | Slightly warm, moderate load |
+| Hot | Hot — throttling active |
+| Critical | Critical — severe performance reduction |
 
 ## Features
 
-- CPU thermal state (Normal / Morno / Quente / Crítico)
+- CPU thermal state (Normal / Warm / Hot / Critical)
 - RAM usage % with active+wired+compressed calculation
 - Disk usage % via `/System/Volumes/Data`
 - Battery time remaining / to charge with dynamic icon
-- Settings panel — show/hide each metric individually
+- Settings panel — show/hide each metric individually, choose language
+- 9 languages: English, Português, Español, Français, Deutsch, 日本語, 한국어, 中文, हिन्दी
 - Event-driven updates (thermalState via NotificationCenter, battery via IOPSNotification)
 - Disk updates every 5 min, everything else every 3s
 - ~0% CPU at idle, ~4 MB RAM
@@ -51,4 +52,4 @@ MIT — free to use, modify, and distribute.
 
 ## Support
 
-If MacMonitor saved your Mac from overheating, [buy me a coffee ☕](https://buymeacoffee.com/bulldozeStore)
+If MacMonitor saved your Mac from overheating, [buy me a coffee ☕](https://buymeacoffee.com/bulldozestore)

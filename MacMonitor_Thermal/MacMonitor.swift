@@ -108,6 +108,20 @@ class CoffeeBannerView: NSView {
     @objc func tapped(){ onSupport?() }
 }
 
+func shouldShowCoffeeBanner() -> Bool {
+    let d = UserDefaults.standard
+    let sessions = d.integer(forKey: "coffeeSessionCount") + 1
+    d.set(sessions, forKey: "coffeeSessionCount")
+    if sessions <= 7 { return true }
+    let lastShown = d.double(forKey: "coffeeLastShown")
+    let now = Date().timeIntervalSince1970
+    if now - lastShown > 7 * 86400 {
+        d.set(now, forKey: "coffeeLastShown")
+        return true
+    }
+    return false
+}
+
 func PowerSourceCallback(_ ctx: UnsafeMutableRawPointer?){
     guard let c=ctx else {return}
     let d=Unmanaged<AppDelegate>.fromOpaque(c).takeUnretainedValue()
@@ -360,10 +374,12 @@ class AppDelegate:NSObject,NSApplicationDelegate,NSMenuDelegate{
             let item=NSMenuItem(); item.view=MetricRowView(frame:NSRect(x:0,y:0,width:320,height:44),symbol:bSym,title:L("label_battery"),sub:bDetail,value:formatTime(batteryTime),pct:Double(batteryPercent),tint:bTint,isCritical:batteryPercent<15 && !batteryCharging)
             menu.addItem(item)
         }
-        let banner=CoffeeBannerView(frame:NSRect(x:0,y:0,width:320,height:44))
-        banner.onSupport={ [weak self] in self?.openCoffee() }
-        let coffeeItem=NSMenuItem(); coffeeItem.view=banner
-        menu.addItem(coffeeItem)
+        if shouldShowCoffeeBanner() {
+            let banner=CoffeeBannerView(frame:NSRect(x:0,y:0,width:320,height:44))
+            banner.onSupport={ [weak self] in self?.openCoffee() }
+            let coffeeItem=NSMenuItem(); coffeeItem.view=banner
+            menu.addItem(coffeeItem)
+        }
         menu.addItem(NSMenuItem.separator())
         let prefs=NSMenuItem(title: L("menu_preferences"), action:#selector(openSettings),keyEquivalent:",")
         prefs.target=self
