@@ -30,6 +30,9 @@ cp MacMonitor_universal "$BUNDLE/Contents/MacOS/MacMonitor"
 cp MacMonitor_Thermal/Info.plist "$BUNDLE/Contents/Info.plist"
 chmod +x "$BUNDLE/Contents/MacOS/MacMonitor"
 
+echo "→ Copying icon..."
+cp MacMonitor_Thermal/AppIcon.icns "$BUNDLE/Contents/Resources/AppIcon.icns"
+
 echo "→ Copying localizations..."
 for lang in en pt es fr de it nl ja ko zh hi; do
   mkdir -p "$BUNDLE/Contents/Resources/${lang}.lproj"
