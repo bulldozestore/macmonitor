@@ -14,7 +14,8 @@
     <xhtml:link rel="alternate" hreflang="nl" href="https://macmonitor.pages.dev/?lang=nl"/>
     <xhtml:link rel="alternate" hreflang="ja" href="https://macmonitor.pages.dev/?lang=ja"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://macmonitor.pages.dev/?lang=ko"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://macmonitor.pages.dev/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://macmonitor.pages.dev/?lang=zh-Hans"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://macmonitor.pages.dev/?lang=zh-Hant"/>
     <xhtml:link rel="alternate" hreflang="hi" href="https://macmonitor.pages.dev/?lang=hi"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://macmonitor.pages.dev/"/>
   </url>

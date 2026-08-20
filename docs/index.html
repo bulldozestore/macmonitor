@@ -27,7 +27,8 @@
 <link rel="alternate" hreflang="nl" href="https://macmonitor.pages.dev/?lang=nl">
 <link rel="alternate" hreflang="ja" href="https://macmonitor.pages.dev/?lang=ja">
 <link rel="alternate" hreflang="ko" href="https://macmonitor.pages.dev/?lang=ko">
-<link rel="alternate" hreflang="zh" href="https://macmonitor.pages.dev/?lang=zh">
+<link rel="alternate" hreflang="zh-Hans" href="https://macmonitor.pages.dev/?lang=zh-Hans">
+<link rel="alternate" hreflang="zh-Hant" href="https://macmonitor.pages.dev/?lang=zh-Hant">
 <link rel="alternate" hreflang="hi" href="https://macmonitor.pages.dev/?lang=hi">
 <link rel="alternate" hreflang="x-default" href="https://macmonitor.pages.dev/">
 <script type="application/ld+json">
@@ -692,7 +693,7 @@ const TRANSLATIONS = {
     footer_download: "다운로드", footer_made: "Mac 커뮤니티를 위해 ❤️ 로 만들었습니다",
     gatekeeper_note: "⚠ 첫 실행: 앱을 오른쪽 클릭 → 열기 를 눌러 macOS Gatekeeper를 우회하세요."
   },
-  zh: {
+  "zh-Hans": {
     nav_github: "GitHub", nav_coffee: "☕ 支持",
     badge_text: "⚡ 免费 & 开源 MIT",
     hero_title: "你的 Mac 体征，<br><span class=\"accent\">始终尽在眼前</span>",
@@ -719,6 +720,34 @@ const TRANSLATIONS = {
     coffee_btn: "☕ 请喝咖啡",
     footer_download: "下载", footer_made: "为 Mac 社区用 ❤️ 打造",
     gatekeeper_note: "⚠ 首次启动：右键点击 app → 打开，绕过 macOS Gatekeeper。"
+  },
+  "zh-Hant": {
+    nav_github: "GitHub", nav_coffee: "☕ 支持",
+    badge_text: "⚡ 免費 & 開源 MIT",
+    hero_title: "你的 Mac 體徵，<br><span class=\"accent\">始終盡在眼前</span>",
+    hero_sub: "CPU 溫度、記憶體、磁碟和電池——在選單列即時顯示。支援 Apple Silicon 和 Intel 的通用二進位檔案。",
+    btn_download: "⬇ 下載 macOS 版", btn_source: "查看原始碼",
+    hero_meta: "macOS 13 Ventura 及以上 • ~620 KB • v1.0 • MIT 授權",
+    mb_normal: "正常",
+    features_label: "功能", features_title: "一目了然",
+    features_sub: "無冗餘。無遙測。純原生 Swift — 零第三方相依。",
+    feat_cpu_title: "CPU 溫度", feat_cpu_desc: "使用 Apple ProcessInfo API 即時提示正常、偏熱、過熱和危急四種狀態。",
+    feat_mem_title: "記憶體使用率", feat_mem_desc: "即時追蹤活躍 + 有線 + 壓縮記憶體，顯示百分比和絕對值。",
+    feat_disk_title: "磁碟空間", feat_disk_desc: "主磁碟區的已用和可用空間 — 每 5 分鐘更新一次。",
+    feat_bat_title: "電池續航", feat_bat_desc: "剩餘時間或充滿所需時間。無電池的桌上型 Mac 上不顯示。",
+    thermal_label: "溫度狀態", thermal_title: "了解你的 CPU",
+    thermal_sub: "MacMonitor 將 Apple 的四個溫度級別對應為清晰的彩色指標。",
+    t_normal: "正常", t_normal_sub: "無節流 — 滿效能", t_normal_badge: "一切正常",
+    t_warm: "偏熱", t_warm_sub: "中等負載 — 風扇加速", t_warm_badge: "注意",
+    t_hot: "過熱", t_hot_sub: "節流中 — 效能下降", t_hot_badge: "節流中",
+    t_critical: "危急", t_critical_sub: "嚴重下降 — 立即關閉重型工作", t_critical_badge: "⚠ 危急",
+    oss_title: "100% 開放原始碼", oss_releases: "版本發布",
+    oss_desc: "所有程式碼以 MIT 授權在 GitHub 上公開。無遙測，無分析，無隱藏網路請求。",
+    coffee_title: "喜歡 MacMonitor 嗎？",
+    coffee_desc: "它永遠免費。如果它讓你的 Mac 免於過熱，請請我喝杯咖啡！",
+    coffee_btn: "☕ 請喝咖啡",
+    footer_download: "下載", footer_made: "為 Mac 社群用 ❤️ 打造",
+    gatekeeper_note: "⚠ 首次啟動：右鍵點擊 app → 開啟，繞過 macOS Gatekeeper。"
   },
   hi: {
     nav_github: "GitHub", nav_coffee: "☕ समर्थन",
@@ -754,7 +783,7 @@ const SUPPORTED = Object.keys(TRANSLATIONS);
 const LANG_NAMES = {
   en:"English", pt:"Português", es:"Español", fr:"Français",
   de:"Deutsch", it:"Italiano", nl:"Nederlands",
-  ja:"日本語", ko:"한국어", zh:"中文", hi:"हिन्दी"
+  ja:"日本語", ko:"한국어", "zh-Hans":"中文（简体）", "zh-Hant":"中文（繁體）", hi:"हिन्दी"
 };
 
 function detectLang() {
@@ -762,8 +791,15 @@ function detectLang() {
   if (url && SUPPORTED.includes(url)) return url;
   const stored = localStorage.getItem("mm_lang");
   if (stored && SUPPORTED.includes(stored)) return stored;
-  const nav = (navigator.language || "en").split("-")[0].toLowerCase();
-  return SUPPORTED.includes(nav) ? nav : "en";
+  const nav = navigator.language || "en";
+  const lower = nav.toLowerCase();
+  // Detect zh-Hans vs zh-Hant by script tag or region
+  if (lower.startsWith("zh")) {
+    if (lower.includes("hant") || lower.includes("tw") || lower.includes("hk") || lower.includes("mo")) return "zh-Hant";
+    return "zh-Hans";
+  }
+  const base = lower.split("-")[0];
+  return SUPPORTED.includes(base) ? base : "en";
 }
 
 function applyLang(lang) {
